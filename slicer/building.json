@@ -1,22 +1,26 @@
 {
 	"name": "test building",
 	"orientation": 12,
-	"edges": [
+	"edges": [ {
 		"geom": [1, 2, 0],
-		"obstacles": [
-			offset: [3, 5, 0],
-			height: 5
-		],
+		"rank": 1,
+		"obstacles": [ {
+			"offset": [3, 5, 0],
+			"height": 5,
+			"geom": [2, 2, 0]
+		} ],
 		"specialObstacles": 34,
-		"diafani": [
-			offsetStart: [1, 0, 1],
-			height: 1,
-			
-		],
+		"diafani": [ {
+			"position": 0.3,
+			"height": 1,
+			"length": 1
+		} ],
 		"adiafani": null
-		[2, 4, 0],
-		[3, 5, 0]
-	],
-	
-	
+	}, {
+		"geom": [2, 4, 0],
+		"rank": 2
+	}, {
+		"geom": [3, 5, 0],
+		"rank": 3
+	} ]	
 }
