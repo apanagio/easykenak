@@ -1,26 +1,49 @@
 {
 	"name": "test building",
-	"orientation": 12,
-	"edges": [ {
-		"geom": [1, 2, 0],
-		"rank": 1,
-		"obstacles": [ {
-			"offset": [3, 5, 0],
-			"height": 5,
-			"geom": [2, 2, 0]
+	"orientation": 0,
+	"adiafaniType": null,
+	"height": null,
+	"heightNet": null,
+	"edges": [{
+			"geom": [0, 1],
+			"obstacles": [{
+				"offset": [3, 5],
+				"height": 5,
+				"geom": [2, 2]
+			}],
+			"specialObstacles": 34,
+			"diafani": [{
+				"position": 0.3,
+				"height": 1,
+				"length": 1
+			}],
+			"adiafani": [{
+				"position": 0,
+				"length": 2,
+				"height": 0.5
+			}],
+			"levels": [{
+				"position": 0,
+				"length": 2,
+				"height": 0.5
+			}]
+		}, {
+			"geom": [1, 0]
+		}, {
+			"geom": [0, 1]
 		} ],
-		"specialObstacles": 34,
-		"diafani": [ {
-			"position": 0.3,
-			"height": 1,
-			"length": 1
-		} ],
-		"adiafani": null
-	}, {
-		"geom": [2, 4, 0],
-		"rank": 2
-	}, {
-		"geom": [3, 5, 0],
-		"rank": 3
-	} ]	
-}
+		"balconies": [{
+			"height": 3.3,
+			"start": {
+				"edge": 1,
+				"position": 0
+			},
+			"geom": [
+				[1, 0],
+				[1, 0],
+				[1, 0]
+			]
+		}],
+		"tents": null,
+		"epafes": null
+	}
