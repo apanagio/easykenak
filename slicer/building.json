@@ -11,6 +11,11 @@
 				"height": 5,
 				"geom": [2, 2]
 			}],
+			"tents": [ {
+				"offset": [3, 5],
+				"height": 5,
+				"geom": [2, 2]
+			} ],
 			"specialObstacles": 34,
 			"diafani": [{
 				"position": 0.3,
@@ -38,12 +43,27 @@
 				"edge": 1,
 				"position": 0
 			},
+			"end": {
+				"edge": 2,
+				"position": 0
+			},
 			"geom": [
 				[1, 0],
 				[1, 0],
 				[1, 0]
 			]
 		}],
-		"tents": null,
-		"epafes": null
+		"epafes": [{
+			"start": {
+				"edge": 1,
+				"position": 0
+			},
+			"end": {
+				"edge": 2,
+				"position": 0
+			},
+			"type": 1,
+			"startHeight": [0, 2],
+			"endHeight": [0, 3]
+		}]
 	}
