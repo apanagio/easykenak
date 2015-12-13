@@ -13,9 +13,7 @@ import Data.Aeson.TH
 
 import Data.Char
 
-import qualified Data.Map(Map)
-import qualified Data.Map as Map
-
+import qualified Data.Map.Strict as Map
 
 data Epafi = Epafi {
 	epfType :: Int
@@ -40,20 +38,20 @@ data Balcony = Balcony {
 
 data Edge = Edge {
 	geom :: (Float, Float)
-	, obstacles :: Maybe [Dispatched]
-	, tents:: Maybe [Dispatched]
+	, obstacles :: [Dispatched]
+	, tents:: [Dispatched]
 	, specialObstacles :: Maybe Float
-	, diafani :: Maybe [Map.Map String Float]
-	, adiafani :: Maybe [Map.Map String Float]
-	, levels :: Maybe [Map.Map String Float]
+	, diafani :: [Map.Map String Float]
+	, adiafani :: [Map.Map String Float]
+	, levels :: [Map.Map String Float]
 	} deriving (Eq, Show)
 
 data Building = Building {
 	name :: String
 	, orientation :: Float
-	, adiafaniType :: Maybe String
-	, height :: Maybe Float
-	, heightNet :: Maybe Float
+	, adiafaniType :: String
+	, height :: Float
+	, heightNet :: Float
 	, edges :: [Edge]
 	, balconies :: Maybe [Balcony]
 	, epafes :: Maybe [Epafi]
