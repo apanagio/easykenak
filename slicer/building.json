@@ -1,9 +1,9 @@
 {
 	"name": "test building",
 	"orientation": 0,
-	"adiafaniType": null,
-	"height": null,
-	"heightNet": null,
+	"adiafaniType": "good",
+	"height": 3.2,
+	"heightNet": 3,
 	"edges": [{
 			"geom": [0, 1],
 			"obstacles": [{
@@ -11,11 +11,6 @@
 				"height": 5,
 				"geom": [2, 2]
 			}],
-			"tents": [ {
-				"offset": [3, 5],
-				"height": 5,
-				"geom": [2, 2]
-			} ],
 			"specialObstacles": 34,
 			"diafani": [{
 				"position": 0.3,
@@ -33,9 +28,20 @@
 				"height": 0.5
 			}]
 		}, {
-			"geom": [1, 0]
+			"geom": [1, 0],
+			"obstacles": [],
+			"diafani": [{
+				"position": 0.3,
+				"height": 1,
+				"length": 1
+			}],
+			"adiafani": [],
+			"levels": []
 		}, {
-			"geom": [0, 1]
+			"geom": [0, 1],
+			"diafani": [],
+			"adiafani": [],
+			"levels": []
 		} ],
 		"balconies": [{
 			"height": 3.3,
