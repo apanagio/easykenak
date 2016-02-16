@@ -38,8 +38,6 @@ data Balcony = Balcony {
 
 data Edge = Edge {
 	geom :: (Float, Float)
-	, obstacles :: [Dispatched]
-	, tents:: [Dispatched]
 	, specialObstacles :: Maybe Float
 	, diafani :: [Map.Map String Float]
 	, adiafani :: [Map.Map String Float]
@@ -53,8 +51,8 @@ data Building = Building {
 	, height :: Float
 	, heightNet :: Float
 	, edges :: [Edge]
-	, balconies :: Maybe [Balcony]
-	, epafes :: Maybe [Epafi]
+	, balconies :: [Balcony]
+	, epafes ::  [Epafi]
 	} deriving (Eq, Show)
 
 $(deriveJSON defaultOptions ''Edge)

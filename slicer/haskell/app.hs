@@ -20,7 +20,7 @@ getDiafani :: [Edge] -> [Map String Float]
 getDiafani a = concat $ filter (not . null) (map extractDiaf $ zip [1 ..] a)
 
 sliceLevel :: [Edge] -> [Edge]
-slieceLevel 
+sliceLevel = undefined
 
 -- slice :: Building -> a
 slice b = edges b
@@ -31,6 +31,6 @@ main = do
   let b = eitherDecode building :: Either String Building 
   case b of 
     Left err -> putStrLn err
-    Right d -> putStrLn $ show  $  getDiafani $ slice d
+    Right d -> print $  getDiafani $ slice d
   
  
