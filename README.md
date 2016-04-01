@@ -7,4 +7,4 @@ Input is a json structure describing the uncut building and output is json again
 
 to test:
 From within the Haskell directory:
-runhaskell app.hs < ../building.json
+`runhaskell app.hs < ../building.json`
