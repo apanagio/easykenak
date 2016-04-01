@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings,TemplateHaskell #-}
 
 import Data.Aeson
-import Data.Aeson.TH 
+import Data.Aeson.TH
 import Data.Aeson.Encode.Pretty
 --import Control.Monad
 
@@ -26,11 +26,9 @@ sliceLevel = undefined
 slice b = edges b
 
 main :: IO ()
-main = do  
-  building <- BL.getContents  
-  let b = eitherDecode building :: Either String Building 
-  case b of 
+main = do
+  building <- BL.getContents
+  let b = eitherDecode building :: Either String Building
+  case b of
     Left err -> putStrLn err
     Right d -> print $  getDiafani $ slice d
-  
- 
