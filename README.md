@@ -5,6 +5,6 @@ Initially it is only a rewrite of the "cutting" application in Haskell. The init
 The data structure has changed and 3D vectors are used everywhere.
 Input is a json structure describing the uncut building and output is json again describing the segments. Backwards compatibility will probably :-) be kept
 
-Input format:
-{params: [
-  orientation:
+to test:
+From within the Haskell directory:
+runhaskell app.hs < ../building.json
