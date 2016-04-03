@@ -11,19 +11,9 @@ import qualified Data.Map.Strict as Map
 --import Data.Maybe
 import qualified Data.ByteString.Lazy.Char8 as BL
 
+import Data.Vect.Float
+
 import DataStructure
-
-extractDiaf :: (Int, Edge) -> [Map String Float]
-extractDiaf (i, d) = map (Map.insert "index" $ fromIntegral $ i) (diafani d)
-
-getDiafani :: [Edge] -> [Map String Float]
-getDiafani a = concat $ filter (not . null) (map extractDiaf $ zip [1 ..] a)
-
-sliceLevel :: [Edge] -> [Edge]
-sliceLevel = undefined
-
--- slice :: Building -> a
-slice b = edges b
 
 main :: IO ()
 main = do
@@ -31,4 +21,4 @@ main = do
   let b = eitherDecode building :: Either String Building
   case b of
     Left err -> putStrLn err
-    Right d -> print $  getDiafani $ slice d
+    Right d -> print $ edges d

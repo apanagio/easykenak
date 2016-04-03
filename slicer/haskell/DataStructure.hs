@@ -2,7 +2,7 @@
 
 module DataStructure 
 ( Epafi(..)
-, Dispatched(..)
+, Obstacle(..)
 , Balcony(..)
 , Edge(..)
 , Building(..)
@@ -11,52 +11,67 @@ module DataStructure
 import Data.Aeson
 import Data.Aeson.TH 
 
-import Data.Char
+import Data.Char(toLower)
 
 import qualified Data.Map.Strict as Map
 
+type OnEdge = Float
+type OnSkel = (Int, OnEdge)
+
+type Vec = (Float, Float)
+
 data Epafi = Epafi {
 	epfType :: Int
-	, epfStart :: Map.Map String Float
-	, epfEnd :: Map.Map String Float
+	, epfStart :: OnSkel
+	, epfEnd :: OnSkel
 	, epfStartHeight :: (Float, Float)
 	, epfEndHeight :: (Float, Float)
 } deriving (Eq, Show)
 
-data Dispatched = Dispatched {
-	dispOffset :: (Float, Float)
-	, dispHeight :: Float
-	, dispGeom :: (Float, Float)
+data Obstacle = Obstacle {
+	obstOffset :: Vec
+	, obstHeight :: Float
+	, obstGeom :: Vec
 } deriving (Eq, Show)
 
 data Balcony = Balcony {
 	balcHeight :: Float
-	, balcStart :: Map.Map String Float
-	, balcEnd :: Map.Map String Float
-	, balcGeom :: [(Float, Float)]
+	, balcStart :: OnSkel
+	, balcEnd :: OnSkel
+	, balcGeom :: [Vec]
+} deriving (Eq, Show)
+
+data Item = Item {
+    itemStart :: OnEdge
+    , itemEnd :: OnEdge
+    , itemStartHeight :: (Float, Float)
+    , itemEndHeight :: (Float, Float)
+    , itemProps :: String
 } deriving (Eq, Show)
 
 data Edge = Edge {
-	geom :: (Float, Float)
-	, specialObstacles :: Maybe Float
-	, diafani :: [Map.Map String Float]
-	, adiafani :: [Map.Map String Float]
-	, levels :: [Map.Map String Float]
+	geom :: Vec
+    , height :: Float
+	, specialObstacles :: Float
+	, diafani :: [Item]
+	, adiafani :: [Item]
+	, levels :: [Item]
 	} deriving (Eq, Show)
 
 data Building = Building {
-	name :: String
-	, orientation :: Float
+	orientation :: Float
 	, adiafaniType :: String
-	, height :: Float
 	, heightNet :: Float
 	, edges :: [Edge]
 	, balconies :: [Balcony]
+    , tents :: [Balcony]
 	, epafes ::  [Epafi]
+    , obstacles :: [Obstacle]
 	} deriving (Eq, Show)
 
 $(deriveJSON defaultOptions ''Edge)
 $(deriveJSON defaultOptions ''Building)
-$(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 4 )} ''Dispatched)
+$(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 4 )} ''Item)
+$(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 4 )} ''Obstacle)
 $(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 4 )} ''Balcony)
 $(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 3)} ''Epafi)
