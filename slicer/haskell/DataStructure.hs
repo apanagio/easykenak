@@ -13,29 +13,27 @@ import Data.Aeson.TH
 
 import Data.Char(toLower)
 
-import qualified Data.Map.Strict as Map
+import Algebra
 
-type OnEdge = Float
+type OnEdge = Double
 type OnSkel = (Int, OnEdge)
-
-type Vec = (Float, Float)
 
 data Epafi = Epafi {
 	epfType :: Int
 	, epfStart :: OnSkel
 	, epfEnd :: OnSkel
-	, epfStartHeight :: (Float, Float)
-	, epfEndHeight :: (Float, Float)
+	, epfStartHeight :: (Double, Double)
+	, epfEndHeight :: (Double, Double)
 } deriving (Eq, Show)
 
 data Obstacle = Obstacle {
 	obstOffset :: Vec
-	, obstHeight :: Float
+	, obstHeight :: Double
 	, obstGeom :: Vec
 } deriving (Eq, Show)
 
 data Balcony = Balcony {
-	balcHeight :: Float
+	balcHeight :: Double
 	, balcStart :: OnSkel
 	, balcEnd :: OnSkel
 	, balcGeom :: [Vec]
@@ -44,24 +42,24 @@ data Balcony = Balcony {
 data Item = Item {
     itemStart :: OnEdge
     , itemEnd :: OnEdge
-    , itemStartHeight :: (Float, Float)
-    , itemEndHeight :: (Float, Float)
+    , itemStartHeight :: (Double, Double)
+    , itemEndHeight :: (Double, Double)
     , itemProps :: String
 } deriving (Eq, Show)
 
 data Edge = Edge {
 	geom :: Vec
-    , height :: Float
-	, specialObstacles :: Float
+    , height :: Double
+	, specialObstacles :: Double
 	, diafani :: [Item]
 	, adiafani :: [Item]
 	, levels :: [Item]
 	} deriving (Eq, Show)
 
 data Building = Building {
-	orientation :: Float
+	orientation :: Double
 	, adiafaniType :: String
-	, heightNet :: Float
+	, heightNet :: Double
 	, edges :: [Edge]
 	, balconies :: [Balcony]
     , tents :: [Balcony]

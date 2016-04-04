@@ -3,15 +3,13 @@
 import Data.Aeson
 import Data.Aeson.TH
 import Data.Aeson.Encode.Pretty
---import Control.Monad
 
 import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
+-- ~ import qualified Data.Map.Strict as Map
 
---import Data.Maybe
 import qualified Data.ByteString.Lazy.Char8 as BL
 
-import Data.Vect.Float
+-- ~ import Data.Vect.Float
 
 import DataStructure
 
