@@ -1,12 +1,6 @@
 {-# LANGUAGE OverloadedStrings,TemplateHaskell #-}
 
-module DataStructure 
-( Epafi(..)
-, Obstacle(..)
-, Balcony(..)
-, Edge(..)
-, Building(..)
-) where
+module DataStructure where
 
 import Data.Aeson
 import Data.Aeson.TH 

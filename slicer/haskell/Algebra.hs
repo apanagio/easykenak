@@ -1,12 +1,11 @@
-module Algebra
-(Vec(..)
-) where
+module Algebra where
 
 type Vec = (Double, Double)
 
--- ~ first vector is a point in line, second vector is the direction vector
--- ~ segments can be defined as lines with a direction vector same size as segment 
+-- ~ line described from point and direction vector
 type Line = (Vec, Vec)
+
+q a b = (a, b)
 
 eps = 1e-10
 
@@ -63,9 +62,10 @@ intersect (v1, v2) (w1, w2)
 
 uintersect :: Line -> Line -> (Double, Double)
 uintersect (v1, v2) (w1, w2) = (t, u) where
-  t = (cross d w2) / c
-  u = (cross d v2) / c
+  t = (cross w2 d) / c
+  u = (cross v2 d) / c
   d = v1 &- w1
   c = cross v2 w2
 
--- ~ project :: Vec -> Line (Double, Double)
+project :: Vec -> Line -> (Double, Double)
+project v (w1, w2) = uintersect (w1, w2) (v, cw w2)

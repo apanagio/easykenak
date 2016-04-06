@@ -12,6 +12,8 @@ import qualified Data.ByteString.Lazy.Char8 as BL
 -- ~ import Data.Vect.Float
 
 import DataStructure
+import Algebra
+import Utils
 
 main :: IO ()
 main = do
@@ -19,4 +21,13 @@ main = do
   let b = eitherDecode building :: Either String Building
   case b of
     Left err -> putStrLn err
-    Right d -> print $ edges d
+    Right d -> do 
+      print $ obstacles d
+      let a = q 0 0
+          b = q 0 2
+          c = q 1 1
+          d = q 2 3
+          l1 = q a b
+          l2 = q c d
+      print $ project a l2
+    
