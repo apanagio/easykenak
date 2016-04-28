@@ -15,6 +15,8 @@ import DataStructure
 import Algebra
 import Utils
 
+import Graphics.Gnuplot.Simple
+
 main :: IO ()
 main = do
   building <- BL.getContents
@@ -22,12 +24,5 @@ main = do
   case b of
     Left err -> putStrLn err
     Right d -> do 
-      print $ obstacles d
-      let a = q 0 0
-          b = q 0 2
-          c = q 1 1
-          d = q 2 3
-          l1 = q a b
-          l2 = q c d
-      print $ project a l2
+      plotList [] [(1.0 :: Double, 1.0 :: Double), (2.0, 2.0), (3.0, 3.0)]
     
