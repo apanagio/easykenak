@@ -2,9 +2,9 @@
 
 import Data.Aeson
 import Data.Aeson.TH
-import Data.Aeson.Encode.Pretty
+-- ~ import Data.Aeson.Encode.Pretty
 
-import Data.Map.Strict (Map)
+-- ~ import Data.Map.Strict (Map)
 -- ~ import qualified Data.Map.Strict as Map
 
 import qualified Data.ByteString.Lazy.Char8 as BL
@@ -14,8 +14,9 @@ import qualified Data.ByteString.Lazy.Char8 as BL
 import DataStructure
 import Algebra
 import Utils
+import Plotter
 
-import Graphics.Gnuplot.Simple
+-- ~ import Graphics.Gnuplot.Simple
 
 main :: IO ()
 main = do
@@ -23,6 +24,9 @@ main = do
   let b = eitherDecode building :: Either String Building
   case b of
     Left err -> putStrLn err
-    Right d -> do 
-      plotList [] [(1.0 :: Double, 1.0 :: Double), (2.0, 2.0), (3.0, 3.0)]
+    Right d -> do
+      writeFile "/tmp/ttt.dat" $ plot d
+      -- ~ putStrLn $ show $ pointFromSkel (edges d) (4, 1.0)
+      -- ~ putStrLn $ show $ getEpafes d
+      putStrLn "OK"
     
