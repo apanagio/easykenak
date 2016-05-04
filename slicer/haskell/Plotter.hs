@@ -12,7 +12,7 @@ plot b = (plotVectors $ getEdgePoints $ edges b)
   ++ "\n\n" ++ (plotVectorList $ getEpafes b)
   ++ "\n\n" ++ (plotVectorList $ getBalconies b)
   ++ "\n\n" ++ (plotVectorList $ getTents b)
-  -- ~ ++ "\n\n" ++ (plotItems levels $ obstacles b)
+  ++ "\n\n" ++ (plotVectorList $ getObstacles $ obstacles b)
   
 plotPoint :: Vec -> String
 plotPoint p = show (fst p) ++ " " ++ show (snd p) ++ "\n"
@@ -61,5 +61,14 @@ getBalcony build balc = (startPoint : vecs) ++ [endPoint]
 getBalconies :: Building -> [[Vec]]
 getBalconies b = map (getBalcony b) $ balconies b
 getTents b = map (getBalcony b) $ tents b
+
+-- plot Obstacles
+getObstacle :: Obstacle -> [Vec]
+getObstacle o = [offset, offset &+ obstGeom o]
+  where offset = obstOffset o
+
+getObstacles :: [Obstacle] -> [[Vec]]
+getObstacles = map getObstacle
+
 
 

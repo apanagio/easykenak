@@ -30,6 +30,9 @@ shadow l o h = do
   , h = h
 }
 
+obstShadow :: Line -> Obstacle -> Maybe ParsedObstacle
+obstShadow = undefined
+
 -- returns list of all edge vectors
 vectors :: [Edge] -> [Vec]
 vectors = map geom
@@ -46,7 +49,7 @@ pointFromSkel es (a, b) =  startPoint &+ (b &* edgeVector)
         ps = V.fromList $ points $ vectors es
         vs = V.fromList $ vectors es
 
--- reverse epafi id start > end
+-- reverse epafi if start > end
 reverseEpafi :: Epafi -> Epafi
 reverseEpafi ep 
   | fst (epfStart ep) <= fst (epfEnd ep) = ep
