@@ -33,21 +33,21 @@ data Balcony = Balcony {
   , balcGeom :: [Vec]
 } deriving (Eq, Show)
 
-data Item = Item {
-  itemStart :: OnEdge
-  , itemEnd :: OnEdge
-  , itemStartHeight :: (Double, Double)
-  , itemEndHeight :: (Double, Double)
-  , itemProps :: String
+data Item a = Item {
+  start :: OnEdge
+  , end :: OnEdge
+  , startHeight :: (Double, Double)
+  , endHeight :: (Double, Double)
+  , props :: a
 } deriving (Eq, Show)
 
 data Edge = Edge {
   geom :: Vec
   , height :: Double
   , specialObstacles :: Double
-  , diafani :: [Item]
-  , adiafani :: [Item]
-  , levels :: [Item]
+  , diafani :: [Item String]
+  , adiafani :: [Item String]
+  , levels :: [Item String]
   } deriving (Eq, Show)
 
 data Building = Building {
@@ -63,7 +63,7 @@ data Building = Building {
 
 $(deriveJSON defaultOptions ''Edge)
 $(deriveJSON defaultOptions ''Building)
-$(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 4 )} ''Item)
+$(deriveJSON defaultOptions ''Item)
 $(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 4 )} ''Obstacle)
 $(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 4 )} ''Balcony)
 $(deriveJSON defaultOptions{fieldLabelModifier = ( (\(x:xs) -> (toLower x:xs)) . drop 3)} ''Epafi)

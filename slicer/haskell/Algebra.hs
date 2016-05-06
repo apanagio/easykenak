@@ -93,5 +93,11 @@ project :: Vec -> Line -> (Double, Double)
 project p (w1, w2) = uintersect (w1, w2) (p, cw w2)
 
 -- project line l1 to line l2
+-- only if l2 is "in front" of l1
 projectLine :: Line -> Line -> Maybe (Double, Double)
-projectLine l1 (p, v) = interval (0.0, 1.0) (fst $ project p l1, fst $ project (p &+ v) l1)
+projectLine l1 (p, v)
+  | not (snd startProj ~< 0) && not (snd endProj ~< 0) = Nothing
+  | otherwise = interval (0.0, 1.0) (fst $ startProj, fst $ endProj)
+  where 
+    startProj =  project p l1
+    endProj = project (p &+ v) l1

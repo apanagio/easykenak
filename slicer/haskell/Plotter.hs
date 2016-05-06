@@ -29,16 +29,16 @@ getEdgePoints :: [Edge] -> [Vec]
 getEdgePoints = points . vectors
 
 -- plot Items (diafani, adiafani, levels)
-getItem :: Line -> Item -> [Vec]
-getItem (p, v) i = [p &+ (itemStart i &* v ), (p &+ (itemEnd i &* v ))]
+getItem :: Line -> Item a -> [Vec]
+getItem (p, v) i = [p &+ (start i &* v ), (p &+ (end i &* v ))]
 
-getEdgeItem :: (Edge -> [Item]) -> Edge -> Vec -> [[Vec]]
+getEdgeItem :: (Edge -> [Item a]) -> Edge -> Vec -> [[Vec]]
 getEdgeItem which e startPoint = map (getItem (startPoint, geom e)) (which e)
 
-getItems :: (Edge -> [Item]) -> [Edge] -> [[Vec]]
+getItems :: (Edge -> [Item a]) -> [Edge] -> [[Vec]]
 getItems which es = getItems' which es (getEdgePoints es)
 
-getItems' :: (Edge -> [Item]) -> [Edge] -> [Vec] -> [[Vec]] 
+getItems' :: (Edge -> [Item a]) -> [Edge] -> [Vec] -> [[Vec]] 
 getItems' which es ps = concat $ zipWith (getEdgeItem which) es ps
 
 -- plot Epafes

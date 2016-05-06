@@ -3,7 +3,6 @@
 import Data.Aeson
 import Data.Aeson.TH
 
-
 import qualified Data.ByteString.Lazy.Char8 as BL
 
 import DataStructure
@@ -21,5 +20,7 @@ main = do
       writeFile "/tmp/ttt.dat" $ plot d
       -- ~ putStrLn $ show $ pointFromSkel (edges d) (4, 1.0)
       -- ~ putStrLn $ show $ getEpafes d
+      -- ~ putStrLn $ show $ getParsedEdges $ edges d
+      putStrLn $ show $ getShadowsFromEdge (head $ tail $ tail $ tail $ tail $ getParsedEdges $ edges d) (getParsedEdges $ edges d)
       putStrLn "OK"
     

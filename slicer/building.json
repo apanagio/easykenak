@@ -5,7 +5,7 @@
 	"height": 3.2,
 	"heightNet": 3,
 	"edges": [{
-        "geom": [0, 1],
+        "geom": [0, -1],
         "height": 4, 
         "specialObstacles": 34,
         "diafani": [{
@@ -29,24 +29,78 @@
             "endHeight": [0.3, 1.3],
             "props": "stuff"
         }]
+    }, {
+        "geom": [1, 0],
+        "height": 4, 
+        "specialObstacles": 34,
+        "diafani": [{
+            "start": 0.3,
+            "end": 0.7,
+            "startHeight": [0.3, 1.3],
+            "endHeight": [0.3, 1.3],
+            "props": "stuff"
+        }],
+        "adiafani": [{
+            "start": 0.3,
+            "end": 0.7,
+            "startHeight": [0.3, 1.3],
+            "endHeight": [0.3, 1.3],
+            "props": "stuff"
+        }],
+        "levels": [{
+            "start": 0.3,
+            "end": 0.7,
+            "startHeight": [0.3, 1.3],
+            "endHeight": [0.3, 1.3],
+            "props": "stuff"
+        }]
+    }, {
+        "geom": [0, 1],
+        "height": 4, 
+        "specialObstacles": 34,
+        "diafani": [],
+        "adiafani": [],
+        "levels": []
+    }, {
+        "geom": [3, 0],
+        "height": 4, 
+        "specialObstacles": 34,
+        "diafani": [],
+        "adiafani": [],
+        "levels": []
+    }, {
+        "geom": [0, -2],
+        "height": 4, 
+        "specialObstacles": 34,
+        "diafani": [],
+        "adiafani": [],
+        "levels": []
     }],
     "balconies": [{
         "start": [1, 0.5],
-        "end": [1, 0.6],
+        "end": [4, 0.5],
         "height": 2,
-        "geom": [[0, 1], [1, 0], [1, 1], [2, 1]]
+        "geom": [[-0.5, 0], [0, -1], [3, 0], [0, 1]]
     }],
     "tents": [],
     "epafes": [{
         "type": 1,
-        "start": [1, 0.2],
-        "end": [2, 0.4],
+        "start": [4, 0.2],
+        "end": [3, 0.4],
         "startHeight": [0, 4],
         "endHeight": [0, 3]
     }],
     "obstacles": [{
-        "offset": [3, 3],
-        "geom": [2, 2],
+        "offset": [-1, 0],
+        "geom": [0, -0.5],
+        "height": 7.2
+    }, {
+        "offset": [-1, -0.75],
+        "geom": [0, -0.5],
+        "height": 7.2
+    }, {
+        "offset": [-1, -2],
+        "geom": [0, -1.5],
         "height": 7.2
     }]
 }
