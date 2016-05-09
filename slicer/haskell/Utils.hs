@@ -72,6 +72,9 @@ obstFromEdge e o
 getShadowsFromEdge :: ParsedEdge -> [ParsedEdge] -> [ParsedObstacle]
 getShadowsFromEdge pe pes = catMaybes $ map (obstFromEdge pe) pes
 
+getAllShadows :: ParsedEdge -> Building -> [ParsedObstacle]
+getAllShadows pe b = (getShadowsFromEdge pe $ getParsedEdges $ edges b) ++ (getShadowsFromObst pe $ obstacles b)
+
 -- returns list of all edge vectors
 vectors :: [Edge] -> [Vec]
 vectors = map geom

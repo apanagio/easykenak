@@ -28,6 +28,7 @@ main = do
       -- ~ putStrLn $ show $ getParsedEdges $ edges d
       -- ~ print $ getShadowsFromEdge (a V.! 4) (getParsedEdges $ edges d)
       -- ~ print $ obstFromEdge (a V.! 4) (a V.! 1)
-      print $ getShadowsFromObst (a V.! 4) (obstacles d)
+      -- ~ print $ getShadowsFromObst (a V.! 4) (obstacles d)
+      print $ getAllShadows (a V.! 4) d
       putStrLn "OK"
     
