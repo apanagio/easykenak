@@ -12,6 +12,7 @@ data ObstacleProps = ObstacleProps {
 }  deriving Show
 
 type EpafiProps = Int
+
 type ParsedObstacle = Item ObstacleProps
 
 data ParsedEdge = ParsedEdge {
@@ -31,6 +32,7 @@ getParsedEdges es = getParsedEdges' es 1 (0, 0) []
 getParsedEdges' [] _ _ res = reverse res
 getParsedEdges' (x:xs) r v res = getParsedEdges' xs (r + 1) (v &+ geom x) ((ParsedEdge {edge = x, rank = r, startPoint = v, parsedObstacles = [], parsedBalconies = [], parsedTents = [], parsedEpafes = []}) :res)
 
+-- get Line from edge
 getEdgeLine :: ParsedEdge -> Line
 getEdgeLine pe = (startPoint pe, geom $ edge pe)
 
@@ -38,8 +40,8 @@ getEdgeLine pe = (startPoint pe, geom $ edge pe)
 -- within the segment (s, e) of line l
 getDistance :: Line -> Line -> (OnEdge, OnEdge) -> Double 
 getDistance (p, v) o (s, e) = (norm v) * ( d1 + d2 ) / 2
-  where d1 = fst $ uintersect (p &+ (s &* v), ccw v) o
-        d2 = fst $ uintersect (p &+ (e &* v), ccw v) o
+  where d1 = fst $ uintersect (p &+ (s &* v), cw v) o
+        d2 = fst $ uintersect (p &+ (e &* v), cw v) o
 
 -- returns the part of Line (l) that has shadow from Line (o) and the distance
 shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
@@ -69,8 +71,6 @@ obstFromEdge e o
 
 getShadowsFromEdge :: ParsedEdge -> [ParsedEdge] -> [ParsedObstacle]
 getShadowsFromEdge pe pes = catMaybes $ map (obstFromEdge pe) pes
-
--- ~ appendObstacle :: ParsedEdge -> Obstacle -> ParsedEdge
 
 -- returns list of all edge vectors
 vectors :: [Edge] -> [Vec]

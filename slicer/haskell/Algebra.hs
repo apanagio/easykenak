@@ -97,6 +97,7 @@ project p (w1, w2) = uintersect (w1, w2) (p, cw w2)
 projectLine :: Line -> Line -> Maybe (Double, Double)
 projectLine l1 (p, v)
   | not (snd startProj ~< 0) && not (snd endProj ~< 0) = Nothing
+  | fst startProj ~= fst endProj = Nothing
   | otherwise = interval (0.0, 1.0) (fst $ startProj, fst $ endProj)
   where 
     startProj =  project p l1
