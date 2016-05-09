@@ -2,7 +2,7 @@
 	"name": "test building",
 	"orientation": 0,
 	"adiafaniType": "good",
-	"height": 3.2,
+	"heightGross": 3.2,
 	"heightNet": 3,
 	"edges": [{
         "geom": [0, -1],
@@ -93,7 +93,7 @@
     "obstacles": [{
         "offset": [-1, 0],
         "geom": [0, -0.5],
-        "height": 7.2
+        "height": 1.2
     }, {
         "offset": [-1, -0.75],
         "geom": [0, -0.5],

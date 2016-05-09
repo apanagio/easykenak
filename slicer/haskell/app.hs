@@ -6,8 +6,10 @@ import Data.Aeson.TH
 import qualified Data.ByteString.Lazy.Char8 as BL
 
 import DataStructure
-import Algebra
+-- ~ import Algebra
 import Utils
+import Shadows
+
 import Plotter
 
 --temp
@@ -29,6 +31,6 @@ main = do
       -- ~ print $ getShadowsFromEdge (a V.! 4) (getParsedEdges $ edges d)
       -- ~ print $ obstFromEdge (a V.! 4) (a V.! 1)
       -- ~ print $ getShadowsFromObst (a V.! 4) (obstacles d)
-      print $ getAllShadows (a V.! 4) d
+      print $ mergeShadows (heightGross d) $ getAllShadows (a V.! 4) d
       putStrLn "OK"
     

@@ -88,6 +88,16 @@ interval' (a1, a2) (b1, b2)
   | a1 >= b2 = Nothing
   | otherwise = Just (max a1 b1, min a2 b2)   
 
+-- interval subtraction remove from i1 the common parts
+intervalSub :: (Double, Double) -> (Double, Double) -> [(Double, Double)]
+intervalSub i1 i2 = case i of 
+  Nothing -> [i1]
+  Just (x, y) -> [(a, x), (b, y)]
+  where 
+    i = interval i1 i2
+    a = fst $ sortTupple i1
+    b = snd $ sortTupple i1
+  
 -- projects point p to line (w1, w2)
 project :: Vec -> Line -> (Double, Double)
 project p (w1, w2) = uintersect (w1, w2) (p, cw w2)

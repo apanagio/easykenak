@@ -9,6 +9,7 @@ import Data.Char(toLower)
 
 import Algebra
 
+-- input data
 type OnEdge = Double
 type OnSkel = (Int, OnEdge)
 
@@ -54,12 +55,32 @@ data Building = Building {
   orientation :: Double
   , adiafaniType :: String
   , heightNet :: Double
+  , heightGross :: Double
   , edges :: [Edge]
   , balconies :: [Balcony]
   , tents :: [Balcony]
   , epafes ::  [Epafi]
   , obstacles :: [Obstacle]
   } deriving (Eq, Show)
+  
+-- intermediate data
+data ObstacleProps = ObstacleProps {
+  distance :: Double
+  , h :: Double
+}  deriving Show
+
+type EpafiProps = Int
+type ParsedObstacle = Item ObstacleProps
+
+data ParsedEdge = ParsedEdge {
+  edge :: Edge
+  , rank :: Int
+  , startPoint :: Vec
+  , parsedObstacles :: [ParsedObstacle]
+  , parsedBalconies :: [ParsedObstacle]
+  , parsedTents :: [ParsedObstacle]
+  , parsedEpafes :: [Item EpafiProps]
+} deriving Show
 
 $(deriveJSON defaultOptions ''Edge)
 $(deriveJSON defaultOptions ''Building)
