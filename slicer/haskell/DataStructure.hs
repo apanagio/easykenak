@@ -69,7 +69,9 @@ data ObstacleProps = ObstacleProps {
 }  deriving Show
 
 type EpafiProps = Int
+
 type ParsedObstacle = Item ObstacleProps
+type ParsedEpafi = Item EpafiProps
 
 data ParsedEdge = ParsedEdge {
   edge :: Edge
@@ -78,7 +80,7 @@ data ParsedEdge = ParsedEdge {
   , parsedObstacles :: [ParsedObstacle]
   , parsedBalconies :: [ParsedObstacle]
   , parsedTents :: [ParsedObstacle]
-  , parsedEpafes :: [Item EpafiProps]
+  , parsedEpafes :: [ParsedEpafi]
 } deriving Show
 
 $(deriveJSON defaultOptions ''Edge)

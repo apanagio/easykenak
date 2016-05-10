@@ -26,6 +26,11 @@ getDistance (p, v) o (s, e) = (norm v) * ( d1 + d2 ) / 2
   where d1 = fst $ uintersect (p &+ (s &* v), cw v) o
         d2 = fst $ uintersect (p &+ (e &* v), cw v) o
 
+-- subtracts all following intervals from the current one
+-- eg [a, b, c, d] -> [[a - b - c - d], [b - c - d], [c - d], [d]]
+mergeIntervalList :: [Interval] -> [[Interval]]
+mergeIntervalList iList = zipWith intervalMM iList $ tail $ tails iList
+
 -- returns the part of Line (l) that has shadow from Line (o) and the distance
 shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
 shadow l o h = do
@@ -40,29 +45,31 @@ shadow l o h = do
     }
 }
 
+-- ParsedObstacle from Obstacle
 obstShadow :: Line -> Obstacle -> Maybe ParsedObstacle
 obstShadow l o = shadow l (obstOffset o, obstGeom o) $ obstHeight o
 
+-- ParsedObstacles to specific edge from all Obstacles
 getShadowsFromObst :: ParsedEdge -> [Obstacle] -> [ParsedObstacle]
 getShadowsFromObst pe os = catMaybes $ map (obstShadow $ getEdgeLine pe) os
 
+-- ParsedObstacle from edge to edge
 obstFromEdge :: ParsedEdge -> ParsedEdge -> Maybe ParsedObstacle
 obstFromEdge e o 
   | rank e == rank o = Nothing
   | otherwise = shadow (getEdgeLine e) (getEdgeLine o) (height $ edge o)
 
+-- ParsedObstacles from all edges
 getShadowsFromEdge :: ParsedEdge -> [ParsedEdge] -> [ParsedObstacle]
 getShadowsFromEdge pe pes = catMaybes $ map (obstFromEdge pe) pes
 
+-- ParsedObstacles from both edges and obstacles
 getAllShadows :: ParsedEdge -> Building -> [ParsedObstacle]
 getAllShadows pe b = (getShadowsFromEdge pe $ getParsedEdges $ edges b) ++ (getShadowsFromObst pe $ obstacles b)
 
+-- merged ParsedObstacles considering which obstacle "hides" others 
 mergeShadows :: Double -> [ParsedObstacle] -> [ParsedObstacle]
-mergeShadows height obst  = map (\x -> (head obst) { fromTo = x} ) merged
+mergeShadows height obst  = concat (zipWith (\o iList -> map (\x -> o { fromTo = x}) iList) sorted merged)
   where 
   sorted = sortBy (compare `on` (\o -> ((h $ props o) - height/2) / (distance $ props o)) ) obst 
   merged = mergeIntervalList $ map fromTo sorted
-
--- subtracts all following intervals from the current one 
-mergeIntervalList :: [Interval] -> [Interval]
-mergeIntervalList iList = concat $ zipWith intervalMM iList $ tail $ tails iList
