@@ -5,6 +5,8 @@ type Vec = (Double, Double)
 -- ~ line described from point and direction vector
 type Line = (Vec, Vec)
 
+type Interval = (Double, Double)
+
 q a b = (a, b)
 
 eps = 1e-10
@@ -79,36 +81,37 @@ sortTupple (a, b)
   | b < a = (b, a)
   | otherwise = (a, b)
 
+width :: Interval -> Double
+width (a, b) = b - a
+
 -- interval intersection
-interval :: (Double, Double) -> (Double, Double) -> Maybe (Double, Double)
-interval a b = interval' (sortTupple a) (sortTupple b)
+intervalIntersection :: Interval -> Interval -> Maybe Interval
+intervalIntersection a b = interval' (sortTupple a) (sortTupple b)
 
 interval' (a1, a2) (b1, b2)
   | a2 <= b1 = Nothing
   | a1 >= b2 = Nothing
   | otherwise = Just (max a1 b1, min a2 b2)   
 
--- interval subtraction remove from i1 the common parts
-intervalSub :: (Double, Double) -> (Double, Double) -> [(Double, Double)]
-intervalSub i1 i2 = case i of 
-  Nothing -> [i1]
-  Just (x, y) -> [(a, x), (b, y)]
+-- interval subtraction remove from big interval the common parts
+intervalSub :: Interval -> Interval -> [Interval]
+intervalSub small big= case i of 
+  Nothing -> [big]
+  Just (x, y) -> filter ((>0) . width) [(a, x), (y, b)]
   where 
-    i = interval i1 i2
-    a = fst $ sortTupple i1
-    b = snd $ sortTupple i1
-  
+    i = intervalIntersection small big
+    a = fst $ sortTupple big
+    b = snd $ sortTupple big
+    
+-- remove i from all intervals in the ilist
+intervalMultiSub :: [Interval] -> Interval -> [Interval]
+intervalMultiSub iList i = concat $ map (intervalSub i) iList
+
+-- remove all intervals in iList1 from intervals in iList2
+intervalMM :: Interval -> [Interval] -> [Interval] 
+intervalMM i1 iList2 = foldl intervalMultiSub [i1] iList2
+     
 -- projects point p to line (w1, w2)
 project :: Vec -> Line -> (Double, Double)
 project p (w1, w2) = uintersect (w1, w2) (p, cw w2)
 
--- project line l1 to line l2
--- only if l2 is "in front" of l1
-projectLine :: Line -> Line -> Maybe (Double, Double)
-projectLine l1 (p, v)
-  | not (snd startProj ~< 0) && not (snd endProj ~< 0) = Nothing
-  | fst startProj ~= fst endProj = Nothing
-  | otherwise = interval (0.0, 1.0) (fst $ startProj, fst $ endProj)
-  where 
-    startProj =  project p l1
-    endProj = project (p &+ v) l1

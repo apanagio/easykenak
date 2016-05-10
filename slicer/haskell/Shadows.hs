@@ -5,9 +5,20 @@ import Algebra
 import Utils
 
 import Data.Function (on)
-import Data.List (sortBy)
+import Data.List (sortBy, tails)
 import Data.Maybe (catMaybes)
 
+-- project line l1 to line l2
+-- only if l2 is "in front" of l1
+projectLine :: Line -> Line -> Maybe Interval
+projectLine l1 (p, v)
+  | not (snd startProj ~< 0) && not (snd endProj ~< 0) = Nothing
+  | fst startProj ~= fst endProj = Nothing
+  | otherwise = intervalIntersection (0.0, 1.0) (fst $ startProj, fst $ endProj)
+  where 
+    startProj =  project p l1
+    endProj = project (p &+ v) l1
+    
 -- calculates the average distance between lines o, l 
 -- within the segment (s, e) of line l
 getDistance :: Line -> Line -> (OnEdge, OnEdge) -> Double 
@@ -20,8 +31,7 @@ shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
 shadow l o h = do
   inter <- projectLine l o
   return Item {
-  start = fst inter
-  , end = snd inter
+  fromTo = inter
   , startHeight = (0, 0)
   , endHeight = (0, 0)
   , props = ObstacleProps {
@@ -48,10 +58,11 @@ getAllShadows :: ParsedEdge -> Building -> [ParsedObstacle]
 getAllShadows pe b = (getShadowsFromEdge pe $ getParsedEdges $ edges b) ++ (getShadowsFromObst pe $ obstacles b)
 
 mergeShadows :: Double -> [ParsedObstacle] -> [ParsedObstacle]
-mergeShadows height obst  = sorted
+mergeShadows height obst  = map (\x -> (head obst) { fromTo = x} ) merged
   where 
-  sorted = sortBy (compare `on` (\o-> ((h $ props o) - height/2) / (distance $ props o)) ) obst 
+  sorted = sortBy (compare `on` (\o -> ((h $ props o) - height/2) / (distance $ props o)) ) obst 
+  merged = mergeIntervalList $ map fromTo sorted
 
--- removes from first Obstacle the part that is common with second
-subtractObst :: ParsedObstacle -> ParsedObstacle -> [ParsedObstacle]
-subtractObst obst1 obst2 = 
+-- subtracts all following intervals from the current one 
+mergeIntervalList :: [Interval] -> [Interval]
+mergeIntervalList iList = concat $ zipWith intervalMM iList $ tail $ tails iList

@@ -30,7 +30,7 @@ getEdgePoints = points . vectors
 
 -- plot Items (diafani, adiafani, levels)
 getItem :: Line -> Item a -> [Vec]
-getItem (p, v) i = [p &+ (start i &* v ), (p &+ (end i &* v ))]
+getItem (p, v) i = [p &+ ((fst $ fromTo i) &* v ), (p &+ ((snd $ fromTo i) &* v ))]
 
 getEdgeItem :: (Edge -> [Item a]) -> Edge -> Vec -> [[Vec]]
 getEdgeItem which e startPoint = map (getItem (startPoint, geom e)) (which e)

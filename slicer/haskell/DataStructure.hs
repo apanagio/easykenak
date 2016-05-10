@@ -17,8 +17,8 @@ data Epafi = Epafi {
   epfType :: Int
   , epfStart :: OnSkel
   , epfEnd :: OnSkel
-  , epfStartHeight :: (Double, Double)
-  , epfEndHeight :: (Double, Double)
+  , epfStartHeight :: Interval
+  , epfEndHeight :: Interval
 } deriving (Eq, Show)
 
 data Obstacle = Obstacle {
@@ -35,10 +35,9 @@ data Balcony = Balcony {
 } deriving (Eq, Show)
 
 data Item a = Item {
-  start :: OnEdge
-  , end :: OnEdge
-  , startHeight :: (Double, Double)
-  , endHeight :: (Double, Double)
+  fromTo :: Interval
+  , startHeight :: Interval
+  , endHeight :: Interval
   , props :: a
 } deriving (Eq, Show)
 

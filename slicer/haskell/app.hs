@@ -32,5 +32,6 @@ main = do
       -- ~ print $ obstFromEdge (a V.! 4) (a V.! 1)
       -- ~ print $ getShadowsFromObst (a V.! 4) (obstacles d)
       print $ mergeShadows (heightGross d) $ getAllShadows (a V.! 4) d
+      -- ~ print $ getAllShadows (a V.! 4) d
       putStrLn "OK"
     
