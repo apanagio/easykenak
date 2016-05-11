@@ -64,7 +64,7 @@ data Building = Building {
   
 -- intermediate data
 data ObstacleProps = ObstacleProps {
-  distance :: Double
+  distance :: (Double, Double)
   , h :: Double
 }  deriving Show
 
@@ -77,6 +77,7 @@ data ParsedEdge = ParsedEdge {
   edge :: Edge
   , rank :: Int
   , startPoint :: Vec
+  , len :: Double -- length of all edges before this one
   , parsedObstacles :: [ParsedObstacle]
   , parsedBalconies :: [ParsedObstacle]
   , parsedTents :: [ParsedObstacle]

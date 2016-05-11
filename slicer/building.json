@@ -79,10 +79,10 @@
     "tents": [],
     "epafes": [{
         "type": 1,
-        "start": [4, 0.2],
-        "end": [3, 0.4],
-        "startHeight": [0, 4],
-        "endHeight": [0, 3]
+        "start": [4, 0],
+        "end": [3, 0],
+        "startHeight": [0, 3],
+        "endHeight": [0, 6]
     }],
     "obstacles": [{
         "offset": [-1, 0],

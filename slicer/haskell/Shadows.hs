@@ -21,8 +21,9 @@ projectLine l1 (p, v)
     
 -- calculates the average distance between lines o, l 
 -- within the segment (s, e) of line l
-getDistance :: Line -> Line -> (OnEdge, OnEdge) -> Double 
-getDistance (p, v) o (s, e) = (norm v) * ( d1 + d2 ) / 2
+getDistance :: Line -> Line -> (OnEdge, OnEdge) -> (Double, Double) 
+-- ~ getDistance (p, v) o (s, e) = (norm v) * ( d1 + d2 ) / 2
+getDistance (p, v) o (s, e) = ((norm v) * d1, (norm v) * d2 ) 
   where d1 = fst $ uintersect (p &+ (s &* v), cw v) o
         d2 = fst $ uintersect (p &+ (e &* v), cw v) o
 
@@ -71,5 +72,5 @@ getAllShadows pe b = (getShadowsFromEdge pe $ getParsedEdges $ edges b) ++ (getS
 mergeShadows :: Double -> [ParsedObstacle] -> [ParsedObstacle]
 mergeShadows height obst  = concat (zipWith (\o iList -> map (\x -> o { fromTo = x}) iList) sorted merged)
   where 
-  sorted = sortBy (compare `on` (\o -> ((h $ props o) - height/2) / (distance $ props o)) ) obst 
+  sorted = sortBy (compare `on` (\o -> ((h $ props o) - height/2) / ((fst $ distance $ props o) + (snd $ distance $ props o))) ) obst 
   merged = mergeIntervalList $ map fromTo sorted

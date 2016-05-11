@@ -27,11 +27,12 @@ main = do
       let a = V.fromList $ getParsedEdges $ edges d
       -- ~ putStrLn $ show $ pointFromSkel (edges d) (4, 1.0)
       -- ~ putStrLn $ show $ getEpafes d
-      -- ~ putStrLn $ show $ getParsedEdges $ edges d
+      -- ~ print $ map len $ getParsedEdges $ edges d
       -- ~ print $ getShadowsFromEdge (a V.! 4) (getParsedEdges $ edges d)
       -- ~ print $ obstFromEdge (a V.! 4) (a V.! 1)
       -- ~ print $ getShadowsFromObst (a V.! 4) (obstacles d)
-      print $ mergeShadows (heightGross d) $ getAllShadows (a V.! 4) d
+      -- ~ print $ mergeShadows (heightGross d) $ getAllShadows (a V.! 4) d
       -- ~ print $ getAllShadows (a V.! 4) d
+      print $ map (breakEpafi $ getParsedEdges $ edges $ d) (epafes d)  
       putStrLn "OK"
     
