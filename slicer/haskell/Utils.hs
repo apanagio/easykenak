@@ -35,28 +35,29 @@ pointFromSkel es (a, b) =  startPoint &+ (b &* edgeVector)
 
 -- returns the total length of the edge before onSkel
 getLength :: [ParsedEdge] -> OnSkel -> Double
-getLength edgeList (a, b) = len e + (b * (norm $ geom $ edge $ e))
-  where e = (V.fromList edgeList) V.! a
+getLength edgeList (a, b) = len e + (b * (norm $ geom $ edge e))
+  where e = (V.fromList edgeList) V.! (a - 1)
         
 -- returns the slope of epafi (bottom slope, top slope)
 slope :: [ParsedEdge] -> Epafi -> Vec
-slope edgeList epf = (1/epfLen) &* (epfEndHeight repf &- epfStartHeight repf)
-  where repf = reverseEpafi epf
-        epfLen = (getLength edgeList $ epfEnd repf) - (getLength edgeList $ epfStart repf)        
+slope edgeList epf = (1/epfLen) &* (epfEndHeight epf &- epfStartHeight epf)
+  where epfLen = (getLength edgeList $ epfEnd epf) - (getLength edgeList $ epfStart epf)        
 
 -- reverse epafi if start > end
 reverseEpafi :: Epafi -> Epafi
 reverseEpafi ep = ep {epfStart = min (epfEnd ep) (epfStart ep), epfEnd = max (epfEnd ep) (epfStart ep)}
   
-breakEpafi :: [ParsedEdge] -> Epafi -> Vec -- [(Int, ParsedEpafi)]
-breakEpafi = slope
-
 -- needs sorted epafi, edge must have epafi
-epafiFromEdge :: ParsedEdge -> Epafi -> ParsedEpafi
-epafiFromEdge e epf = Item { 
-  fromTo = (a, b)
-  , startHeight = undefined
-  , endHeight = undefined
-  , props = epfType epf
-  }  where a = if rank e > (fst $ epfStart epf) then 0 else snd $ epfStart epf
-           b = if rank e < (fst $ epfEnd epf) then 1 else snd $ epfEnd epf    
+epafiFromEdge :: [ParsedEdge] -> ParsedEdge -> Epafi -> ParsedEpafi
+epafiFromEdge edgeList e epf = 
+  Item { 
+    fromTo = (a, b)
+    , startHeight = (epfStartHeight epf) &+ (startLen &* sl)
+    , endHeight = (epfStartHeight epf) &+ (endLen &* sl)
+    , props = epfType epf
+  }  
+  where a = if rank e > (fst $ epfStart epf) then 0 else snd $ epfStart epf
+        b = if rank e < (fst $ epfEnd epf) then 1 else snd $ epfEnd epf    
+        sl = slope edgeList epf
+        startLen = (getLength edgeList (rank e, a)) - (getLength edgeList $ epfStart epf)
+        endLen = getLength edgeList (rank e, b) - (getLength edgeList $ epfStart epf)

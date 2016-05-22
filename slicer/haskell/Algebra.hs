@@ -21,9 +21,9 @@ eps = 1e-10
 (~<) a b = a - b < eps 
 
 
-bitwiseMult :: Vec -> Vec -> Vec
-bitwiseMult (a1, a2) (b1, b2) = (a1 * b1, a2 * b2)
-(**) = bitwiseMult
+elementMult :: Vec -> Vec -> Vec
+elementMult (a1, a2) (b1, b2) = (a1 * b1, a2 * b2)
+(|*) = elementMult
 
 addVector :: Vec -> Vec -> Vec
 addVector (a1, a2) (b1, b2) = (a1 + b1, a2 + b2) 

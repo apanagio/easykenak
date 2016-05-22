@@ -35,6 +35,6 @@ main = do
       -- ~ print $ mergeShadows (heightGross d) $ getAllShadows (a V.! 4) d
       -- ~ print $ getAllShadows (a V.! 4) d
       -- ~ print $ epafiFromEdge (a V.! 0) (head $ epafes d)
-      print $ breakEpafi c (head $ epafes d)
+      print $ epafiFromEdge c (a V.! 0) (head $ epafes d)
       putStrLn "OK"
     
