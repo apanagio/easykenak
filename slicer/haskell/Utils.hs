@@ -33,24 +33,30 @@ pointFromSkel es (a, b) =  startPoint &+ (b &* edgeVector)
         ps = V.fromList $ points $ vectors es
         vs = V.fromList $ vectors es
 
-
 -- returns the total length of the edge before onSkel
 getLength :: [ParsedEdge] -> OnSkel -> Double
 getLength edgeList (a, b) = len e + (b * (norm $ geom $ edge $ e))
   where e = (V.fromList edgeList) V.! a
         
+-- returns the slope of epafi (bottom slope, top slope)
+slope :: [ParsedEdge] -> Epafi -> Vec
+slope edgeList epf = (1/epfLen) &* (epfEndHeight repf &- epfStartHeight repf)
+  where repf = reverseEpafi epf
+        epfLen = (getLength edgeList $ epfEnd repf) - (getLength edgeList $ epfStart repf)        
+
 -- reverse epafi if start > end
 reverseEpafi :: Epafi -> Epafi
 reverseEpafi ep = ep {epfStart = min (epfEnd ep) (epfStart ep), epfEnd = max (epfEnd ep) (epfStart ep)}
   
--- ~ breakEpafi :: [ParsedEdge] -> Epafi -> [Int, ParsedEpafi]
-breakEpafi edgeList epf = slope
-  where repf = reverseEpafi epf
-        epfLen = (getLength edgeList $ epfStart $ repf) - (getLength edgeList $ epfEnd $ repf)
-        slope =  (1/epfLen) &* (epfEndHeight repf &- epfStartHeight repf) 
+breakEpafi :: [ParsedEdge] -> Epafi -> Vec -- [(Int, ParsedEpafi)]
+breakEpafi = slope
 
 -- needs sorted epafi, edge must have epafi
-epafiFromEdge :: ParsedEdge -> Epafi -> Interval
-epafiFromEdge e epf = (a, b)
-  where a = if rank e > (fst $ epfStart $ epf) then 0 else snd $ epfStart epf
-        b = if rank e < (fst $ epfEnd $ epf) then 1 else snd $ epfEnd epf    
+epafiFromEdge :: ParsedEdge -> Epafi -> ParsedEpafi
+epafiFromEdge e epf = Item { 
+  fromTo = (a, b)
+  , startHeight = undefined
+  , endHeight = undefined
+  , props = epfType epf
+  }  where a = if rank e > (fst $ epfStart epf) then 0 else snd $ epfStart epf
+           b = if rank e < (fst $ epfEnd epf) then 1 else snd $ epfEnd epf    

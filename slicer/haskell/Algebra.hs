@@ -20,6 +20,11 @@ eps = 1e-10
 (~<) :: Double -> Double -> Bool
 (~<) a b = a - b < eps 
 
+
+bitwiseMult :: Vec -> Vec -> Vec
+bitwiseMult (a1, a2) (b1, b2) = (a1 * b1, a2 * b2)
+(**) = bitwiseMult
+
 addVector :: Vec -> Vec -> Vec
 addVector (a1, a2) (b1, b2) = (a1 + b1, a2 + b2) 
 (&+) = addVector
@@ -54,7 +59,7 @@ ccw (a, b) = (-b, a)
 dist :: Vec -> Vec -> Double
 dist v1 v2 = norm (v2 &- v1)
 
--- Are 2 vectors are parallel?
+-- Are 2 vectors parallel?
 par ::  Vec -> Vec -> Bool
 par v w = cross v w ~= 0
 

@@ -24,7 +24,8 @@ main = do
     Left err -> putStrLn err
     Right d -> do
       writeFile "/tmp/ttt.dat" $ plot d
-      let a = V.fromList $ getParsedEdges $ edges d
+      let c = getParsedEdges $ edges d
+      let a = V.fromList $ c
       -- ~ putStrLn $ show $ pointFromSkel (edges d) (4, 1.0)
       -- ~ putStrLn $ show $ getEpafes d
       -- ~ print $ map len $ getParsedEdges $ edges d
@@ -33,6 +34,7 @@ main = do
       -- ~ print $ getShadowsFromObst (a V.! 4) (obstacles d)
       -- ~ print $ mergeShadows (heightGross d) $ getAllShadows (a V.! 4) d
       -- ~ print $ getAllShadows (a V.! 4) d
-      print $ map (breakEpafi $ getParsedEdges $ edges $ d) (epafes d)  
+      -- ~ print $ epafiFromEdge (a V.! 0) (head $ epafes d)
+      print $ breakEpafi c (head $ epafes d)
       putStrLn "OK"
     
