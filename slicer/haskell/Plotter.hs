@@ -5,20 +5,20 @@ import Algebra
 import Utils
 
 plot :: Building -> String
-plot b = (plotVectors $ getEdgePoints $ edges b) 
-  ++ "\n\n" ++ (plotVectorList $ getItems diafani $ edges b) 
+plot b = (plotVectors $ getEdgePoints $ edges b)
+  ++ "\n\n" ++ (plotVectorList $ getItems diafani $ edges b)
   ++ "\n\n" ++ (plotVectorList $ getItems adiafani $ edges b)
   ++ "\n\n" ++ (plotVectorList $ getItems levels $ edges b)
-  ++ "\n\n" ++ (plotVectorList $ getEpafes b)
+  ++ "\n\n" ++ (plotVectorList $ ugetEpafes b)
   ++ "\n\n" ++ (plotVectorList $ getBalconies b)
   ++ "\n\n" ++ (plotVectorList $ getTents b)
   ++ "\n\n" ++ (plotVectorList $ getObstacles $ obstacles b)
-  
+
 plotPoint :: Vec -> String
 plotPoint p = show (fst p) ++ " " ++ show (snd p) ++ "\n"
 
 plotVectors :: [Vec] -> String
-plotVectors vs = (foldr1 (++) $ map plotPoint vs) ++ "\n" 
+plotVectors vs = (foldr1 (++) $ map plotPoint vs) ++ "\n"
 
 plotVectorList :: [[Vec]] -> String
 plotVectorList [] = ""
@@ -38,7 +38,7 @@ getEdgeItem which e startPoint = map (getItem (startPoint, geom e)) (which e)
 getItems :: (Edge -> [Item a]) -> [Edge] -> [[Vec]]
 getItems which es = getItems' which es (getEdgePoints es)
 
-getItems' :: (Edge -> [Item a]) -> [Edge] -> [Vec] -> [[Vec]] 
+getItems' :: (Edge -> [Item a]) -> [Edge] -> [Vec] -> [[Vec]]
 getItems' which es ps = concat $ zipWith (getEdgeItem which) es ps
 
 -- plot Epafes
@@ -48,8 +48,8 @@ getEpafi es ep = map (pointFromSkel es) pts
         edg = [(fst $ epfStart rep) + 1 .. (fst $ epfEnd rep)]
         pts = [epfStart rep] ++ zip edg (repeat 0) ++ [epfEnd rep]
 
-getEpafes :: Building -> [[Vec]]
-getEpafes b = map (getEpafi (edges b)) (epafes b)
+ugetEpafes :: Building -> [[Vec]]
+ugetEpafes b = map (getEpafi (edges b)) (epafes b)
 
 -- plot Balconies - tents
 getBalcony :: Building -> Balcony -> [Vec]
@@ -69,6 +69,3 @@ getObstacle o = [offset, offset &+ obstGeom o]
 
 getObstacles :: [Obstacle] -> [[Vec]]
 getObstacles = map getObstacle
-
-
-

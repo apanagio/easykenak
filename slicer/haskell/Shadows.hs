@@ -6,7 +6,7 @@ import Utils
 
 import Data.Function (on)
 import Data.List (sortBy, tails)
-import Data.Maybe (catMaybes)
+import Data.Maybe (mapMaybe)
 
 -- project line l1 to line l2
 -- only if l2 is "in front" of l1
@@ -14,16 +14,15 @@ projectLine :: Line -> Line -> Maybe Interval
 projectLine l1 (p, v)
   | not (snd startProj ~< 0) && not (snd endProj ~< 0) = Nothing
   | fst startProj ~= fst endProj = Nothing
-  | otherwise = intervalIntersection (0.0, 1.0) (fst $ startProj, fst $ endProj)
-  where 
+  | otherwise = intervalIntersection (0.0, 1.0) (fst startProj, fst endProj)
+  where
     startProj =  project p l1
     endProj = project (p &+ v) l1
-    
--- calculates the average distance between lines o, l 
+
+-- calculates the average distance between lines o, l
 -- within the segment (s, e) of line l
-getDistance :: Line -> Line -> (OnEdge, OnEdge) -> (Double, Double) 
--- ~ getDistance (p, v) o (s, e) = (norm v) * ( d1 + d2 ) / 2
-getDistance (p, v) o (s, e) = ((norm v) * d1, (norm v) * d2 ) 
+getDistance :: Line -> Line -> (OnEdge, OnEdge) -> (Double, Double)
+getDistance (p, v) o (s, e) = (norm v * d1, norm v * d2 )
   where d1 = fst $ uintersect (p &+ (s &* v), cw v) o
         d2 = fst $ uintersect (p &+ (e &* v), cw v) o
 
@@ -34,7 +33,7 @@ mergeIntervalList iList = zipWith intervalMM iList $ tail $ tails iList
 
 -- returns the part of Line (l) that has shadow from Line (o) and the distance
 shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
-shadow l o h = do
+shadow l o he = do
   inter <- projectLine l o
   return Item {
   fromTo = inter
@@ -42,7 +41,7 @@ shadow l o h = do
   , endHeight = (0, 0)
   , props = ObstacleProps {
       distance = getDistance l o inter
-      , h = h
+      , h = he
     }
 }
 
@@ -52,25 +51,28 @@ obstShadow l o = shadow l (obstOffset o, obstGeom o) $ obstHeight o
 
 -- ParsedObstacles to specific edge from all Obstacles
 getShadowsFromObst :: ParsedEdge -> [Obstacle] -> [ParsedObstacle]
-getShadowsFromObst pe os = catMaybes $ map (obstShadow $ getEdgeLine pe) os
+getShadowsFromObst pe = mapMaybe (obstShadow $ getEdgeLine pe)
 
 -- ParsedObstacle from edge to edge
 obstFromEdge :: ParsedEdge -> ParsedEdge -> Maybe ParsedObstacle
-obstFromEdge e o 
+obstFromEdge e o
   | rank e == rank o = Nothing
   | otherwise = shadow (getEdgeLine e) (getEdgeLine o) (height $ edge o)
 
 -- ParsedObstacles from all edges
 getShadowsFromEdge :: ParsedEdge -> [ParsedEdge] -> [ParsedObstacle]
-getShadowsFromEdge pe pes = catMaybes $ map (obstFromEdge pe) pes
+getShadowsFromEdge pe = mapMaybe (obstFromEdge pe)
 
 -- ParsedObstacles from both edges and obstacles
 getAllShadows :: ParsedEdge -> Building -> [ParsedObstacle]
-getAllShadows pe b = (getShadowsFromEdge pe $ getParsedEdges $ edges b) ++ (getShadowsFromObst pe $ obstacles b)
+getAllShadows pe b = getShadowsFromEdge pe (getParsedEdges $ edges b) ++ getShadowsFromObst pe (obstacles b)
 
--- merged ParsedObstacles considering which obstacle "hides" others 
+-- merged ParsedObstacles considering which obstacle "hides" others
 mergeShadows :: Double -> [ParsedObstacle] -> [ParsedObstacle]
-mergeShadows height obst  = concat (zipWith (\o iList -> map (\x -> o { fromTo = x}) iList) sorted merged)
-  where 
-  sorted = sortBy (compare `on` (\o -> ((h $ props o) - height/2) / ((fst $ distance $ props o) + (snd $ distance $ props o))) ) obst 
+mergeShadows he obst  = concat (zipWith (\o iList -> map (\x -> o { fromTo = x}) iList) sorted merged)
+  where
+  sorted = sortBy (compare `on` (\o -> (h (props o) - he/2) / ((fst $ distance $ props o) + (snd $ distance $ props o))) ) obst
   merged = mergeIntervalList $ map fromTo sorted
+
+getMergedShadows :: Building -> ParsedEdge -> [ParsedObstacle]
+getMergedShadows b pe = mergeShadows (heightGross b) $ getAllShadows pe b

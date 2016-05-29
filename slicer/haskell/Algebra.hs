@@ -99,22 +99,22 @@ interval' (a1, a2) (b1, b2)
   | otherwise = Just (max a1 b1, min a2 b2)
 
 -- interval subtraction remove from big interval the common parts
--- intervalSub :: Interval -> Interval -> [Interval]
--- intervalSub small big= case i of
---  Nothing -> [big]
---  Just (x, y) -> filter ((>0) . width) [(a, x), (y, b)]
---  where
---    i = intervalIntersection small big
---    a = fst $ sortTupple big
---    b = snd $ sortTupple big
+intervalSub :: Interval -> Interval -> [Interval]
+intervalSub small big= case i of
+ Nothing -> [big]
+ Just (x, y) -> filter ((>0) . width) [(a, x), (y, b)]
+ where
+   i = intervalIntersection small big
+   a = fst $ sortTupple big
+   b = snd $ sortTupple big
 
 -- remove i from all intervals in the ilist
--- intervalMultiSub :: [Interval] -> Interval -> [Interval]
--- intervalMultiSub iList i = concatMap (intervalSub i) iList
+intervalMultiSub :: [Interval] -> Interval -> [Interval]
+intervalMultiSub iList i = concatMap (intervalSub i) iList
 
 -- remove all intervals in iList1 from intervals in iList2
--- intervalMM :: Interval -> [Interval] -> [Interval]
--- intervalMM i1 iList2 = foldl intervalMultiSub [i1] iList2
+intervalMM :: Interval -> [Interval] -> [Interval]
+intervalMM i1 iList2 = foldl intervalMultiSub [i1] iList2
 
 -- projects point p to line (w1, w2)
 project :: Vec -> Line -> (Double, Double)
