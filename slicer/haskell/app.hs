@@ -8,7 +8,7 @@ import qualified Data.ByteString.Lazy.Char8 as BL
 import DataStructure
 -- ~ import Algebra
 import Utils
-import Shadows
+-- import Shadows
 
 import Plotter
 
@@ -35,6 +35,5 @@ main = do
       -- ~ print $ mergeShadows (heightGross d) $ getAllShadows (a V.! 4) d
       -- ~ print $ getAllShadows (a V.! 4) d
       -- ~ print $ epafiFromEdge (a V.! 0) (head $ epafes d)
-      print $ epafiFromEdge c (a V.! 0) (head $ epafes d)
+      print $ epafiFromEdge c (a V.! 2) (head $ epafes d)
       putStrLn "OK"
-    

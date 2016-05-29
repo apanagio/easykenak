@@ -7,18 +7,18 @@ type Line = (Vec, Vec)
 
 type Interval = (Double, Double)
 
-q a b = (a, b)
-
+-- q a b = (a, b)
+eps :: Double
 eps = 1e-10
 
 (~=) :: Double -> Double -> Bool
-(~=) a b = a - b < eps && a - b > -eps 
+(~=) a b = a - b < eps && a - b > -eps
 
 (~>) :: Double -> Double -> Bool
-(~>) a b = a - b > -eps 
+(~>) a b = a - b > -eps
 
 (~<) :: Double -> Double -> Bool
-(~<) a b = a - b < eps 
+(~<) a b = a - b < eps
 
 
 elementMult :: Vec -> Vec -> Vec
@@ -26,22 +26,22 @@ elementMult (a1, a2) (b1, b2) = (a1 * b1, a2 * b2)
 (|*) = elementMult
 
 addVector :: Vec -> Vec -> Vec
-addVector (a1, a2) (b1, b2) = (a1 + b1, a2 + b2) 
+addVector (a1, a2) (b1, b2) = (a1 + b1, a2 + b2)
 (&+) = addVector
 
 subVector :: Vec -> Vec -> Vec
-subVector (a1, a2) (b1, b2) = (a1 - b1, a2 - b2) 
+subVector (a1, a2) (b1, b2) = (a1 - b1, a2 - b2)
 (&-) = subVector
 
 dotProduct :: Vec -> Vec -> Double
-dotProduct (a1, a2) (b1, b2) = a1 * b1 + a2 * b2 
+dotProduct (a1, a2) (b1, b2) = a1 * b1 + a2 * b2
 (&.) = dotProduct
 
 norm :: Vec -> Double
-norm v = sqrt $ v &. v 
+norm v = sqrt $ v &. v
 
 cross :: Vec -> Vec -> Double
-cross (a1, a2) (b1, b2) = a1 * b2 - a2 * b1 
+cross (a1, a2) (b1, b2) = a1 * b2 - a2 * b1
 (&#) = cross
 
 scalar :: Double -> Vec -> Vec
@@ -75,14 +75,14 @@ intersect (v1, v2) (w1, w2)
 --unsafe intersect, no check, can throw error if lines parallel
 uintersect :: Line -> Line -> (Double, Double)
 uintersect (v1, v2) (w1, w2) = (t, u) where
-  t = (cross w2 d) / c
-  u = (cross v2 d) / c
+  t = cross w2 d / c
+  u = cross v2 d / c
   d = v1 &- w1
   c = cross v2 w2
 
 -- sort a tupple so that snd >= fst
 sortTupple :: (Double, Double) -> (Double, Double)
-sortTupple (a, b) 
+sortTupple (a, b)
   | b < a = (b, a)
   | otherwise = (a, b)
 
@@ -96,27 +96,26 @@ intervalIntersection a b = interval' (sortTupple a) (sortTupple b)
 interval' (a1, a2) (b1, b2)
   | a2 <= b1 = Nothing
   | a1 >= b2 = Nothing
-  | otherwise = Just (max a1 b1, min a2 b2)   
+  | otherwise = Just (max a1 b1, min a2 b2)
 
 -- interval subtraction remove from big interval the common parts
-intervalSub :: Interval -> Interval -> [Interval]
-intervalSub small big= case i of 
-  Nothing -> [big]
-  Just (x, y) -> filter ((>0) . width) [(a, x), (y, b)]
-  where 
-    i = intervalIntersection small big
-    a = fst $ sortTupple big
-    b = snd $ sortTupple big
-    
+-- intervalSub :: Interval -> Interval -> [Interval]
+-- intervalSub small big= case i of
+--  Nothing -> [big]
+--  Just (x, y) -> filter ((>0) . width) [(a, x), (y, b)]
+--  where
+--    i = intervalIntersection small big
+--    a = fst $ sortTupple big
+--    b = snd $ sortTupple big
+
 -- remove i from all intervals in the ilist
-intervalMultiSub :: [Interval] -> Interval -> [Interval]
-intervalMultiSub iList i = concat $ map (intervalSub i) iList
+-- intervalMultiSub :: [Interval] -> Interval -> [Interval]
+-- intervalMultiSub iList i = concatMap (intervalSub i) iList
 
 -- remove all intervals in iList1 from intervals in iList2
-intervalMM :: Interval -> [Interval] -> [Interval] 
-intervalMM i1 iList2 = foldl intervalMultiSub [i1] iList2
-     
+-- intervalMM :: Interval -> [Interval] -> [Interval]
+-- intervalMM i1 iList2 = foldl intervalMultiSub [i1] iList2
+
 -- projects point p to line (w1, w2)
 project :: Vec -> Line -> (Double, Double)
 project p (w1, w2) = uintersect (w1, w2) (p, cw w2)
-

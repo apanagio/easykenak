@@ -81,8 +81,8 @@
         "type": 1,
         "start": [1, 0],
         "end": [2, 1],
-        "startHeight": [0, 3],
-        "endHeight": [1, 5]
+        "startHeight": [0, 2],
+        "endHeight": [0, 3]
     }],
     "obstacles": [{
         "offset": [-1, 0],
