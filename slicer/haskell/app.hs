@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings,TemplateHaskell #-}
+-- ~ {-# LANGUAGE OverloadedStrings,TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 import Data.Aeson
 -- import Data.Aeson.TH
@@ -9,6 +10,7 @@ import DataStructure
 -- ~ import Algebra
 import Utils
 import Shadows
+import Epafes
 
 import qualified Plotter as PL
 
@@ -25,7 +27,7 @@ main = do
     Right d -> do
       writeFile "/tmp/ttt.dat" $ PL.plot d
       let c = getParsedEdges $ edges d
-      let a = V.fromList $ c
+      let a = V.fromList c
       -- ~ putStrLn $ show $ pointFromSkel (edges d) (4, 1.0)
       -- ~ putStrLn $ show $ getEpafes d
       -- ~ print $ map len $ getParsedEdges $ edges d
@@ -37,5 +39,6 @@ main = do
       -- ~ print $ epafiFromEdge (a V.! 0) (head $ epafes d)
       -- print $ epafiFromEdge c (a V.! 2) (head $ epafes d)
       -- print $ getMergedShadows d (a V.! 4)
-      print $ getEpafes d (a V.! 1)
+      -- ~ print $ getEpafes d (a V.! 1)
+      print $ map (addEpafes d . addShadows d) c
       putStrLn "OK"

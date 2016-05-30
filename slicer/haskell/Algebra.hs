@@ -114,7 +114,7 @@ intervalMultiSub iList i = concatMap (intervalSub i) iList
 
 -- remove all intervals in iList1 from intervals in iList2
 intervalMM :: Interval -> [Interval] -> [Interval]
-intervalMM i1 iList2 = foldl intervalMultiSub [i1] iList2
+intervalMM i1 = foldl intervalMultiSub [i1] 
 
 -- projects point p to line (w1, w2)
 project :: Vec -> Line -> (Double, Double)

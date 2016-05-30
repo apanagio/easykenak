@@ -76,3 +76,7 @@ mergeShadows he obst  = concat (zipWith (\o iList -> map (\x -> o { fromTo = x})
 
 getMergedShadows :: Building -> ParsedEdge -> [ParsedObstacle]
 getMergedShadows b pe = mergeShadows (heightGross b) $ getAllShadows pe b
+
+--add shadows to edge
+addShadows :: Building -> ParsedEdge -> ParsedEdge
+addShadows b pe = pe {parsedObstacles = getMergedShadows b pe}

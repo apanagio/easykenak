@@ -3,6 +3,7 @@ module Plotter where
 import DataStructure
 import Algebra
 import Utils
+import Epafes
 
 plot :: Building -> String
 plot b = (plotVectors $ getEdgePoints $ edges b)
