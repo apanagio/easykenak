@@ -71,7 +71,7 @@ getAllShadows pe b = getShadowsFromEdge pe (getParsedEdges $ edges b) ++ getShad
 mergeShadows :: Double -> [ParsedObstacle] -> [ParsedObstacle]
 mergeShadows he obst  = concat (zipWith (\o iList -> map (\x -> o { fromTo = x}) iList) sorted merged)
   where
-  sorted = sortBy (compare `on` (\o -> (h (props o) - he/2) / ((fst $ distance $ props o) + (snd $ distance $ props o))) ) obst
+  sorted = sortBy (compare `on` (\o -> (h (props o) - he/2) / uncurry (+) (distance $ props o)) ) obst
   merged = mergeIntervalList $ map fromTo sorted
 
 getMergedShadows :: Building -> ParsedEdge -> [ParsedObstacle]
