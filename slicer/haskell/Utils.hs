@@ -23,9 +23,16 @@ getEdgeLine pe = (startPoint pe, geom $ edge pe)
 vectors :: [Edge] -> [Vec]
 vectors = map geom
 
+-- given a list of vectors and a startPoint returns the list of points 
+pointsFrom :: Vec -> [Vec] -> [Vec]
+pointsFrom = scanl (&+)
+
 -- given a list of vectors returns the list of points
 points :: [Vec] -> [Vec]
-points = scanl (&+) (0, 0)
+points = pointsFrom (0, 0)
+
+vectorsFromPoints :: [Vec] -> [Vec]
+vectorsFromPoints p = zipWith (&-) (tail p) p
 
 -- returns the point described by OnSkel
 pointFromSkel :: [Edge] -> OnSkel -> Vec

@@ -68,10 +68,16 @@ data ObstacleProps = ObstacleProps {
   , h :: Double
 }  deriving Show
 
+data BalconyProps = BalconyProps {
+  parsedBalcGeom :: [Vec]
+  , parsedBalcHeight :: Double 
+} deriving Show
+
 type EpafiProps = Int
 
 type ParsedObstacle = Item ObstacleProps
 type ParsedEpafi = Item EpafiProps
+type ParsedBalcony = Item BalconyProps
 
 data ParsedEdge = ParsedEdge {
   edge :: Edge
@@ -79,8 +85,8 @@ data ParsedEdge = ParsedEdge {
   , startPoint :: Vec
   , len :: Double -- length of all edges before this one
   , parsedObstacles :: [ParsedObstacle]
-  , parsedBalconies :: [ParsedObstacle]
-  , parsedTents :: [ParsedObstacle]
+  , parsedBalconies :: [ParsedBalcony]
+  , parsedTents :: [ParsedBalcony]
   , parsedEpafes :: [ParsedEpafi]
 } deriving Show
 

@@ -11,6 +11,7 @@ import DataStructure
 import Utils
 import Shadows
 import Epafes
+import Balconies
 
 import qualified Plotter as PL
 
@@ -40,5 +41,7 @@ main = do
       -- print $ epafiFromEdge c (a V.! 2) (head $ epafes d)
       -- print $ getMergedShadows d (a V.! 4)
       -- ~ print $ getEpafes d (a V.! 1)
-      print $ map (addEpafes d . addShadows d) c
+      -- ~ print $ getBalcLines (edges d) $ head $ balconies d
+      -- ~ print $ map (addEpafes d . addShadows d) c
+      print $ getBalcDist (edges d) (head $ balconies d) (1, 0.7)
       putStrLn "OK"
