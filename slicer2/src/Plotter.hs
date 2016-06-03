@@ -3,70 +3,39 @@ module Plotter where
 import DataStructure
 import Algebra
 import Utils
-import Epafes
 
 plot :: Building -> String
-plot b = (plotVectors $ getEdgePoints $ edges b)
-  ++ "\n\n" ++ (plotVectorList $ getItems diafani $ edges b)
-  ++ "\n\n" ++ (plotVectorList $ getItems adiafani $ edges b)
-  ++ "\n\n" ++ (plotVectorList $ getItems levels $ edges b)
-  ++ "\n\n" ++ (plotVectorList $ ugetEpafes b)
-  ++ "\n\n" ++ (plotVectorList $ getBalconies b)
-  ++ "\n\n" ++ (plotVectorList $ getTents b)
-  ++ "\n\n" ++ (plotVectorList $ getObstacles $ obstacles b)
+plot b = plotVectors (points $ geom $ edges b)
+  ++ "\n\n" ++ plotVectorList (uGetItems (geom $ edges b) (diafani b))
+  ++ "\n\n" ++ plotVectorList (uGetItems (geom $ edges b) (adiafani b))
+  ++ "\n\n" ++ plotVectorList (uGetItems (geom $ edges b) (levels b))
+  ++ "\n\n" ++ plotVectorList (uGetItems (geom $ edges b) (epafes b))
+  ++ "\n\n" ++ plotVectorList (getBalconies (geom $ edges b) (balconies b))
+  ++ "\n\n" ++ plotVectorList (getBalconies (geom $ edges b) (tents b))
+  ++ "\n\n" ++ plotVectorList (getObstacles $ obstacles b)
 
 plotPoint :: Vec -> String
-plotPoint p = show (fst p) ++ " " ++ show (snd p) ++ "\n"
+plotPoint (a, b) = show a ++ " " ++ show b ++ "\n"
 
 plotVectors :: [Vec] -> String
-plotVectors vs = (foldr1 (++) $ map plotPoint vs) ++ "\n"
+plotVectors vs = foldr1 (++) (map plotPoint vs) ++ "\n"
 
 plotVectorList :: [[Vec]] -> String
 plotVectorList [] = ""
-plotVectorList vs = foldr1 (++) $ map plotVectors $ vs
+plotVectorList vs = foldr1 (++) (map plotVectors vs)
 
--- plot skeleton
-getEdgePoints :: [Edge] -> [Vec]
-getEdgePoints = points . vectors
+-- all the points between two points (assume sorted)
+pointsBetween :: OnSkel -> OnSkel -> [OnSkel]
+pointsBetween (s1, s2) (e1, e2) = (s1, s2) : zip [s1+1..e1] [0, 0..] ++ [(e1, e2)]
 
--- plot Items (diafani, adiafani, levels)
-getItem :: Line -> Item a -> [Vec]
-getItem (p, v) i = [p &+ ((fst $ fromTo i) &* v ), (p &+ ((snd $ fromTo i) &* v ))]
+-- plot Items (diafani, adiafani, levels, epafes)
+uGetItems :: [Vec] -> [Item a] -> [[Vec]]
+uGetItems es = map getItem
+  where getItem  i = map (pointFromSkel es) (pointsBetween (start i) (end i))  
 
-getEdgeItem :: (Edge -> [Item a]) -> Edge -> Vec -> [[Vec]]
-getEdgeItem which e startPoint = map (getItem (startPoint, geom e)) (which e)
-
-getItems :: (Edge -> [Item a]) -> [Edge] -> [[Vec]]
-getItems which es = getItems' which es (getEdgePoints es)
-
-getItems' :: (Edge -> [Item a]) -> [Edge] -> [Vec] -> [[Vec]]
-getItems' which es ps = concat $ zipWith (getEdgeItem which) es ps
-
--- plot Epafes
-getEpafi :: [Edge] -> Epafi -> [Vec]
-getEpafi es ep = map (pointFromSkel es) pts
-  where rep = reverseEpafi ep
-        edg = [(fst $ epfStart rep) + 1 .. (fst $ epfEnd rep)]
-        pts = [epfStart rep] ++ zip edg (repeat 0) ++ [epfEnd rep]
-
-ugetEpafes :: Building -> [[Vec]]
-ugetEpafes b = map (getEpafi (edges b)) (epafes b)
-
--- plot Balconies - tents
-getBalcony :: Building -> Balcony -> [Vec]
-getBalcony build balc = (startPoint : vecs) ++ [endPoint]
-  where startPoint = pointFromSkel (edges build) $ balcStart balc
-        endPoint = pointFromSkel (edges build) $ balcEnd balc
-        vecs = scanl (&+) startPoint $ balcGeom balc
-
-getBalconies :: Building -> [[Vec]]
-getBalconies b = map (getBalcony b) $ balconies b
-getTents b = map (getBalcony b) $ tents b
+getBalconies :: [Vec] -> [Balcony] -> [[Vec]]
+getBalconies es = map (getBalcPoints es)
 
 -- plot Obstacles
-getObstacle :: Obstacle -> [Vec]
-getObstacle o = [offset, offset &+ obstGeom o]
-  where offset = obstOffset o
-
 getObstacles :: [Obstacle] -> [[Vec]]
-getObstacles = map getObstacle
+getObstacles = map $ \o -> pointsFrom (obstOffset o) [obstGeom o]

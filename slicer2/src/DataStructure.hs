@@ -10,8 +10,8 @@ import Data.Char(toLower)
 import Algebra
 
 -- input data
-type OnEdge = Double
-type OnSkel = (Int, OnEdge)
+-- ~ type OnEdge = Double
+type OnSkel = (Int, Double)
 
 data Item a = Item {
   start :: OnSkel

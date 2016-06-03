@@ -80,6 +80,10 @@ uintersect (v1, v2) (w1, w2) = (t, u) where
   d = v1 &- w1
   c = cross v2 w2
 
+-- projects point p to line (w1, w2)
+project :: Vec -> Line -> (Double, Double)
+project p (w1, w2) = uintersect (w1, w2) (p, cw w2)
+
 -- sort a tupple so that snd >= fst
 sortTupple :: (Ord a) => (a, a) -> (a, a)
 sortTupple (a, b)
@@ -116,6 +120,3 @@ intervalMultiSub iList i = concatMap (intervalSub i) iList
 intervalMM :: Interval -> [Interval] -> [Interval]
 intervalMM i1 = foldl intervalMultiSub [i1] 
 
--- projects point p to line (w1, w2)
-project :: Vec -> Line -> (Double, Double)
-project p (w1, w2) = uintersect (w1, w2) (p, cw w2)
