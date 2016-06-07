@@ -20,8 +20,6 @@ library
                        , Algebra
                        , Utils
                       --  , Shadows
-                      --  , Epafes
-                      --  , Balconies
                        , Plotter
   build-depends:       base >= 4.7 && < 5
                        , aeson

@@ -2,6 +2,8 @@ module Utils where
 
 import qualified Data.Vector as V
 import Data.Maybe (mapMaybe)
+import Data.List (sortBy, tails)
+
 
 import Algebra
 import DataStructure
@@ -32,14 +34,13 @@ reverseItem i
   | otherwise = i {start = end i, end = start i, startHeight = endHeight i, endHeight = startHeight i}
 
 -- given a part of edges returns the part of the specific edge that belongs there (assume from < to)
-affected :: OnSkel -> OnSkel -> Int -> Maybe Interval
-affected from to which
-  | which < fst from = Nothing
-  | which > fst to = Nothing
-  | otherwise = Just (a, b)
-  where a = if which > fst from then 0 else snd to
-        b = if which < fst to then 1 else snd to
-   
+affected :: (OnSkel, OnSkel) -> (OnSkel, OnSkel) -> Maybe (OnSkel, OnSkel)
+affected (a1, a2) (b1, b2)
+  | fst w > snd w = Nothing
+  | otherwise = Just w
+  where w = (max a1 b1, min a2 b2)  
+
+--enhance (in the future verify) building data
 nBuilding :: Building -> Building
 nBuilding b = b {
   diafani = map reverseItem $ diafani b
@@ -48,6 +49,7 @@ nBuilding b = b {
   , epafes = map reverseItem $ epafes b
 }
 
+-- >>>>>>>>> Balconies <<<<<<<<<<
 -- get balcony points
 getBalcPoints :: [Vec] -> Balcony -> [Vec]
 getBalcPoints es balc = pointsFrom (pointFromSkel es $ balcStart balc) (balcGeom balc) ++ [pointFromSkel es $ balcEnd balc]
@@ -87,3 +89,59 @@ getEdgeWithBalc es balc
   | hasBalcony es balc $ getPivotPoint balc = [sorted]
   | otherwise = [((0, 0), fst sorted), (snd sorted, (length es, 1))]
   where sorted = sortTupple (balcStart balc, balcEnd balc)
+
+-- create "normalized" balcony data
+nBalcony :: [Vec] -> Balcony -> ParsedBalcony
+nBalcony es balc = Item {
+  start = balcStart balc
+  , end = balcEnd balc
+  , startHeight = (0, 0)
+  , endHeight = (0, 0)
+  , props = BalconyProps {
+    parsedBalcLines = getBalcLines es balc
+    , parsedBalcHeight = balcHeight balc
+    , covers = getEdgeWithBalc es balc
+  }
+} 
+-- >>>>>>>>>>>>>> END Balconies <<<<<<<<<<<<<<<<<<<
+
+-- >>>>>>>>>>>>>> Obstacles <<<<<<<<<<<<<<<<<<<<<<<
+
+-- project line l1 to line l2
+-- only if l2 is "in front" of l1
+projectLine :: Line -> Line -> Maybe Interval
+projectLine l1 (p, v)
+  | not (snd startProj ~< 0) && not (snd endProj ~< 0) = Nothing
+  | fst startProj ~= fst endProj = Nothing
+  | otherwise = intervalIntersection (0.0, 1.0) (fst startProj, fst endProj)
+  where
+    startProj =  project p l1
+    endProj = project (p &+ v) l1
+    
+-- calculates the average distance between lines o, l
+-- within the segment (s, e) of line l
+getDistance :: Line -> Line -> (Double, Double) -> (Double, Double)
+getDistance (p, v) o (s, e) = (norm v * d1, norm v * d2 )
+  where d1 = fst $ uintersect (p &+ (s &* v), cw v) o
+        d2 = fst $ uintersect (p &+ (e &* v), cw v) o
+        
+-- subtracts all following intervals from the current one
+-- eg [a, b, c, d] -> [[a - b - c - d], [b - c - d], [c - d], [d]]
+mergeIntervalList :: [Interval] -> [[Interval]]
+mergeIntervalList iList = zipWith intervalMM iList $ tail $ tails iList
+
+-- returns the part of Line (l) that has shadow from Line (o) and the distance
+shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
+shadow l o he = do
+  inter <- projectLine l o
+  return Item {
+  fromTo = inter
+  , startHeight = (0, 0)
+  , endHeight = (0, 0)
+  , props = ObstacleProps {
+      distance = getDistance l o inter
+      , h = he
+    }
+}
+
+-- >>>>>>>>>>>>>> END Obstacles <<<<<<<<<<<<<<<<<<<

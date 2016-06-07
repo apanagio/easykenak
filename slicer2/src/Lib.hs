@@ -15,7 +15,6 @@ import DataStructure
 import Algebra
 import Utils
 -- import Shadows
--- import Balconies
 
 import qualified Plotter as PL
 

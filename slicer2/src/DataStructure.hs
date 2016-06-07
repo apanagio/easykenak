@@ -62,14 +62,13 @@ data ObstacleProps = ObstacleProps {
 }  deriving Show
 
 data BalconyProps = BalconyProps {
-  parsedBalcGeom :: [Vec]
+  parsedBalcLines :: [Line]
   , parsedBalcHeight :: Double
+  , covers :: [(OnSkel, OnSkel)]
 } deriving Show
 
 type EpafiProps = Int
-
 type ParsedObstacle = Item ObstacleProps
-type ParsedEpafi = Item EpafiProps
 type ParsedBalcony = Item BalconyProps
 
 --   edge :: Edge
