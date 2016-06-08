@@ -20,6 +20,7 @@ import qualified Plotter as PL
 
 --temp
 import qualified Data.Vector as V
+import Data.Maybe(mapMaybe)
 ---
 
 run :: IO ()
@@ -32,4 +33,4 @@ run = do
       writeFile "/tmp/ttt.dat" $ PL.plot $ nBuilding d
       print $ getLength (geom $ edges d) (2, 0.5)
       -- ~ print $ getEdgeWithBalc (geom $ edges d) (head $ balconies d)
-      print $ getDistance (6,12) ((0,0), (11,0))
+      print $ mapMaybe id $ getShadowsEdge (edges d) ((2, 0), last $ geom $ edges d)
