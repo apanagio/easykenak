@@ -31,4 +31,5 @@ run = do
     Right d -> do
       writeFile "/tmp/ttt.dat" $ PL.plot $ nBuilding d
       print $ getLength (geom $ edges d) (2, 0.5)
-      print $ getEdgeWithBalc (geom $ edges d) (head $ balconies d)
+      -- ~ print $ getEdgeWithBalc (geom $ edges d) (head $ balconies d)
+      print $ getDistance (6,12) ((0,0), (11,0))

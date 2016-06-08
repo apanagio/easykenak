@@ -80,9 +80,16 @@ uintersect (v1, v2) (w1, w2) = (t, u) where
   d = v1 &- w1
   c = cross v2 w2
 
--- projects point p to line (w1, w2)
+-- projects point p to line (w1, w2) acroos vector v
+-- ~ projectVector :: Vec -> Line -> Vec -> Maybe (Double, Double)
+-- ~ projectVector p l v = intersect l (p, v)
+
+-- projects point p to line (w1, w2) perpendicularly
 project :: Vec -> Line -> (Double, Double)
 project p (w1, w2) = uintersect (w1, w2) (p, cw w2)
+
+-- shortesr distance between point and line
+getDistance p (w1, w2) = norm w2 * snd ( project p (w1, w2) ) 
 
 -- sort a tupple so that snd >= fst
 sortTupple :: (Ord a) => (a, a) -> (a, a)

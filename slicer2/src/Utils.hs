@@ -109,39 +109,39 @@ nBalcony es balc = Item {
 
 -- project line l1 to line l2
 -- only if l2 is "in front" of l1
-projectLine :: Line -> Line -> Maybe Interval
-projectLine l1 (p, v)
+-- return part of l1 that gets the projection and
+-- distance of the points
+projectLine :: Line -> (Line, Double) -> Maybe (Interval, (Double, Double), Double)
+projectLine (p1, v1) ((p2, v2), h)
   | not (snd startProj ~< 0) && not (snd endProj ~< 0) = Nothing
   | fst startProj ~= fst endProj = Nothing
-  | otherwise = intervalIntersection (0.0, 1.0) (fst startProj, fst endProj)
+  | otherwise = Just ((a, b), (getD a, getD b), h)
   where
-    startProj =  project p l1
-    endProj = project (p &+ v) l1
-    
--- calculates the average distance between lines o, l
--- within the segment (s, e) of line l
-getDistance :: Line -> Line -> (Double, Double) -> (Double, Double)
-getDistance (p, v) o (s, e) = (norm v * d1, norm v * d2 )
-  where d1 = fst $ uintersect (p &+ (s &* v), cw v) o
-        d2 = fst $ uintersect (p &+ (e &* v), cw v) o
+    startProj =  project p2 (p1, v1)
+    endProj = project (p2 &+ v2) (p1, v1)
+    Just (a, b) = intervalIntersection (0.0, 1.0) (fst startProj, fst endProj)
+    getD s = norm v1 * fst (uintersect (p1 &+ (s &* v1), cw v1) (p2, v2))
         
 -- subtracts all following intervals from the current one
 -- eg [a, b, c, d] -> [[a - b - c - d], [b - c - d], [c - d], [d]]
 mergeIntervalList :: [Interval] -> [[Interval]]
 mergeIntervalList iList = zipWith intervalMM iList $ tail $ tails iList
 
+-- ~ getShadows :: Line -> Edges -> [Maybe (Interval, (Double, Double), Double)]
+-- ~ getShadows e es = zipWith (map (projectLine e) (zip (points $ geom es) (geom es) )) (height es)
+
 -- returns the part of Line (l) that has shadow from Line (o) and the distance
-shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
-shadow l o he = do
-  inter <- projectLine l o
-  return Item {
-  fromTo = inter
-  , startHeight = (0, 0)
-  , endHeight = (0, 0)
-  , props = ObstacleProps {
-      distance = getDistance l o inter
-      , h = he
-    }
-}
+-- ~ shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
+-- ~ shadow l o he = do
+  -- ~ inter <- projectLine l o
+  -- ~ return Item {
+  -- ~ fromTo = inter
+  -- ~ , startHeight = (0, 0)
+  -- ~ , endHeight = (0, 0)
+  -- ~ , props = ObstacleProps {
+      -- ~ distance = getDistance l o inter
+      -- ~ , h = he
+    -- ~ }
+-- ~ }
 
 -- >>>>>>>>>>>>>> END Obstacles <<<<<<<<<<<<<<<<<<<
