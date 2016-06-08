@@ -128,8 +128,8 @@ projectLine (p1, v1) (p2, v2)
 
 -- subtracts all following intervals from the current one
 -- eg [a, b, c, d] -> [[a - b - c - d], [b - c - d], [c - d], [d]]
--- mergeIntervalList :: [Interval] -> [[Interval]]
--- mergeIntervalList iList = zipWith intervalMM iList $ tail $ tails iList
+mergeIntervalList :: [Interval] -> [[Interval]]
+mergeIntervalList iList = zipWith intervalMM iList $ tail $ tails iList
 
 getShadowsEdge :: Edges -> Line -> [Maybe TempObstacle]
 getShadowsEdge es e = zipWith tt (map (projectLine e) (zip (points $ geom es) (geom es) )) (height es)
@@ -140,11 +140,11 @@ getShadowsObst os e = zipWith tt (map (projectLine e . getObstLine) os) (map obs
 -- merged ParsedObstacles considering which obstacle "hides" others
 -- mergeShadows :: Double -> [TempObstacle] -> [TempObstacle]
 -- mergeShadows he [(fromTo, (d1, d2), h)]  =
---   concat (zipWith (\o iList -> map (\x -> o { fromTo = x}) iList) sorted merged)
---   where
---   sorted = sortBy (compare `on` (h - he/2) / (d1 + d2)
---
---   merged = mergeIntervalList $ map fromTo sorted
+  -- concat (zipWith (\o iList -> map (\x -> o { fromTo = x}) iList) sorted merged)
+  -- where
+  -- sorted = sortBy (compare `on` (h - he/2) / (d1 + d2)
+  --
+  -- merged = mergeIntervalList $ map fromTo sorted
 
 tt :: Maybe (a, b) -> c -> Maybe (a, b, c)
 tt Nothing _ = Nothing
@@ -152,6 +152,7 @@ tt (Just (x, y)) z = Just (x, y, z)
 
 getObstLine :: Obstacle -> Line
 getObstLine o = (obstOffset o, obstGeom o)
+
 -- returns the part of Line (l) that has shadow from Line (o) and the distance
 -- ~ shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
 -- ~ shadow l o he = do
