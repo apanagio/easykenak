@@ -19,8 +19,9 @@ import Utils
 import qualified Plotter as PL
 
 --temp
-import qualified Data.Vector as V
-import Data.Maybe(mapMaybe)
+import Data.Vector (fromList, (!))
+-- ~ import qualified Data.Vector as V
+-- ~ import Data.Maybe(mapMaybe, catMaybes)
 ---
 
 run :: IO ()
@@ -31,6 +32,11 @@ run = do
     Left err -> putStrLn err
     Right d -> do
       writeFile "/tmp/ttt.dat" $ PL.plot $ nBuilding d
+      let es = geom $ edges d
+      let ls = zip (points es) es
+      let v = fromList ls
       print $ getLength (geom $ edges d) (2, 0.5)
       -- ~ print $ getEdgeWithBalc (geom $ edges d) (head $ balconies d)
-      print $ mapMaybe id $ getShadowsEdge (edges d) ((2, 0), last $ geom $ edges d)
+      -- ~ print $ getShadowsEdge (edges d) (v ! 4 )
+      print $ mergeShadows 4 (heightGross d) $ (getShadowsEdge (edges d) (v ! 4 ) ++ getShadowsObst (obstacles d) (v ! 4 ))
+

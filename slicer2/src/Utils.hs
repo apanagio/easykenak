@@ -1,8 +1,9 @@
 module Utils where
 
 import qualified Data.Vector as V
-import Data.Maybe (mapMaybe)
+import Data.Maybe (mapMaybe, catMaybes)
 import Data.List (sortBy, tails)
+import Data.Ord(comparing)
 import Control.Arrow ((***))
 
 import Algebra
@@ -131,40 +132,42 @@ projectLine (p1, v1) (p2, v2)
 mergeIntervalList :: [Interval] -> [[Interval]]
 mergeIntervalList iList = zipWith intervalMM iList $ tail $ tails iList
 
-getShadowsEdge :: Edges -> Line -> [Maybe TempObstacle]
-getShadowsEdge es e = zipWith tt (map (projectLine e) (zip (points $ geom es) (geom es) )) (height es)
+getShadowsEdge :: Edges -> Line -> [TempObstacle]
+getShadowsEdge es e = catMaybes $ zipWith tt (height es) (map (projectLine e) (zip (points $ geom es) (geom es) )) 
 
-getShadowsObst :: [Obstacle] -> Line -> [Maybe TempObstacle]
-getShadowsObst os e = zipWith tt (map (projectLine e . getObstLine) os) (map obstHeight os)
+getShadowsObst :: [Obstacle] -> Line -> [TempObstacle]
+getShadowsObst os e = catMaybes $ zipWith tt (map obstHeight os) (map (projectLine e . getObstLine) os) 
 
--- merged ParsedObstacles considering which obstacle "hides" others
--- mergeShadows :: Double -> [TempObstacle] -> [TempObstacle]
--- mergeShadows he [(fromTo, (d1, d2), h)]  =
-  -- concat (zipWith (\o iList -> map (\x -> o { fromTo = x}) iList) sorted merged)
-  -- where
-  -- sorted = sortBy (compare `on` (h - he/2) / (d1 + d2)
-  --
-  -- merged = mergeIntervalList $ map fromTo sorted
+appendTupple :: a -> (b, c) -> (b, c, a)
+appendTupple a (b, c) = (b, c, a)
 
-tt :: Maybe (a, b) -> c -> Maybe (a, b, c)
-tt Nothing _ = Nothing
-tt (Just (x, y)) z = Just (x, y, z)
+tt :: c -> Maybe (a, b) -> Maybe (a, b, c)
+tt x = (<$>) (appendTupple x)
 
 getObstLine :: Obstacle -> Line
 getObstLine o = (obstOffset o, obstGeom o)
 
--- returns the part of Line (l) that has shadow from Line (o) and the distance
--- ~ shadow :: Line -> Line -> Double -> Maybe ParsedObstacle
--- ~ shadow l o he = do
-  -- ~ inter <- projectLine l o
-  -- ~ return Item {
-  -- ~ fromTo = inter
-  -- ~ , startHeight = (0, 0)
-  -- ~ , endHeight = (0, 0)
-  -- ~ , props = ObstacleProps {
-      -- ~ distance = getDistance l o inter
-      -- ~ , h = he
-    -- ~ }
--- ~ }
+measureObst :: Double -> TempObstacle -> Double
+measureObst he (i, (d1, d2), h) = (he - h/2) / (d1 + d2)
+
+sortObst :: Double -> [TempObstacle] -> [TempObstacle]
+sortObst he = sortBy (comparing (measureObst he))
+
+getParsedObst :: Int -> TempObstacle -> Interval -> ParsedObstacle
+getParsedObst i (_, d, he) (from, to) = Item {
+  start = (i, from)
+  , end = (i, to)
+  , startHeight = (0,0)
+  , endHeight = (0,0)
+  , props = ObstacleProps {
+    distance = d
+    , h = he
+    }
+  }
+
+mergeShadows :: Int -> Double -> [TempObstacle] -> [ParsedObstacle]
+mergeShadows i he tes = concat $ zipWith (\o ivals -> map (getParsedObst i o) ivals) sorted merged 
+  where sorted = sortObst he tes
+        merged = mergeIntervalList $ map (\(a,b,c) -> a) sorted
 
 -- >>>>>>>>>>>>>> END Obstacles <<<<<<<<<<<<<<<<<<<
