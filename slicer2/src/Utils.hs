@@ -133,10 +133,10 @@ mergeIntervalList :: [Interval] -> [[Interval]]
 mergeIntervalList iList = zipWith intervalMM iList $ tail $ tails iList
 
 getShadowsEdge :: Edges -> Line -> [TempObstacle]
-getShadowsEdge es e = catMaybes $ zipWith tt (height es) (map (projectLine e) (zip (points $ geom es) (geom es) )) 
+getShadowsEdge es e = catMaybes $ zipWith tt (height es) (map (projectLine e) (zip (points $ geom es) (geom es) ))
 
 getShadowsObst :: [Obstacle] -> Line -> [TempObstacle]
-getShadowsObst os e = catMaybes $ zipWith tt (map obstHeight os) (map (projectLine e . getObstLine) os) 
+getShadowsObst os e = catMaybes $ zipWith tt (map obstHeight os) (map (projectLine e . getObstLine) os)
 
 appendTupple :: a -> (b, c) -> (b, c, a)
 appendTupple a (b, c) = (b, c, a)
@@ -149,9 +149,6 @@ getObstLine o = (obstOffset o, obstGeom o)
 
 measureObst :: Double -> TempObstacle -> Double
 measureObst he (i, (d1, d2), h) = (he - h/2) / (d1 + d2)
-
-sortObst :: Double -> [TempObstacle] -> [TempObstacle]
-sortObst he = sortBy (comparing (measureObst he))
 
 getParsedObst :: Int -> TempObstacle -> Interval -> ParsedObstacle
 getParsedObst i (_, d, he) (from, to) = Item {
@@ -166,8 +163,14 @@ getParsedObst i (_, d, he) (from, to) = Item {
   }
 
 mergeShadows :: Int -> Double -> [TempObstacle] -> [ParsedObstacle]
-mergeShadows i he tes = concat $ zipWith (\o ivals -> map (getParsedObst i o) ivals) sorted merged 
-  where sorted = sortObst he tes
+mergeShadows i he tes = concat $ zipWith (\o ivals -> map (getParsedObst i o) ivals) sorted merged
+  where sorted = sortBy (comparing (measureObst he)) tes
         merged = mergeIntervalList $ map (\(a,b,c) -> a) sorted
+
+getAllShadows :: Building -> [ParsedObstacle]
+getAllShadows b = concat $ zipWith f [1..] lines
+  where lines = zip (points $ geom eds ) (geom eds)
+        eds = edges b
+        f  i  e = mergeShadows i (heightGross b) (getShadowsEdge eds e ++ getShadowsObst (obstacles b) e)
 
 -- >>>>>>>>>>>>>> END Obstacles <<<<<<<<<<<<<<<<<<<

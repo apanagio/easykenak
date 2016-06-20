@@ -37,6 +37,8 @@ run = do
       let v = fromList ls
       print $ getLength (geom $ edges d) (2, 0.5)
       -- ~ print $ getEdgeWithBalc (geom $ edges d) (head $ balconies d)
-      -- ~ print $ getShadowsEdge (edges d) (v ! 4 )
-      print $ mergeShadows 4 (heightGross d) $ (getShadowsEdge (edges d) (v ! 4 ) ++ getShadowsObst (obstacles d) (v ! 4 ))
-
+      -- print $ getShadowsEdge (edges d) (v ! 2 )
+      -- print $ mergeShadows 2 (heightGross d) $ (getShadowsEdge (edges d) (v ! 2 ) ++ getShadowsObst (obstacles d) (v ! 2 ))
+      print $ getAllShadows d
+      -- print $ projectLine (v!2) (v!4)
+      -- print $ zipWith tt (height $ edges d) $ map (projectLine (v!2)) ls
